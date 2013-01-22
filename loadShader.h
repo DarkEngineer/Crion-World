@@ -12,3 +12,5 @@
 using namespace std;
 
 string loadShaderFile(const string fileName);
+void getShaderLogInfo( GLuint shader );
+void getProgramLogInfo( GLuint program );
