@@ -8,7 +8,7 @@ int main()
 	glfwInit();
 	
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
+	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
 	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
 	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
