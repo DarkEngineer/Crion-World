@@ -120,7 +120,7 @@ int main( int argc, char * argv[])
 
 	glFITexture Texture;
 
-;
+
 	if(!Texture.Load( "sample.png" ))
 		fprintf( stderr, "Failed to load texture file" );
 	Texture.Bind();
