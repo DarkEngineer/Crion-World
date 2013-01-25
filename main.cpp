@@ -1,10 +1,14 @@
 #include "loadshader.h"
 
+#include "loadImage.h"
 
 
 
-int main()
+
+int main( int argc, char * argv[])
 {
+
+	printf( "Sciezka pliku to: %s\n", argv[ 0 ] );
 	
 	glfwInit();
 	
@@ -39,15 +43,28 @@ int main()
 	GLuint vbo;
 	glGenBuffers( 1, &vbo); //generate 1 buffer
 	
+	GLuint ebo;
+	glGenBuffers(1, &ebo);
+
+
 
 	float vertices[] = {
-		0.0f,	0.5f,
-		0.5f,	-0.5f,
-		-0.5f,	-0.5f
+		//Positiom    Color				Texture coords
+		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,//top-left
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,// top-right
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,// bottom-right
+		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f// bottom-left
+	};
+
+	GLuint elements[] = {
+		0, 1, 2,
+		2, 3, 0
 	};
 
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ebo );
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( elements ), elements, GL_STATIC_DRAW );
 	
 	// vertex shader loading
 	const string vShaderString = loadShaderFile("SimpleVertexShader.vertexshader").c_str();
@@ -92,24 +109,47 @@ int main()
 
 	GLint posAttrib = glGetAttribLocation( shaderProgram, "position" );
 	glEnableVertexAttribArray( posAttrib );
-	glVertexAttribPointer( posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+	glVertexAttribPointer( posAttrib, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0 );
+	
+	GLint colAttrib =  glGetAttribLocation( shaderProgram, "color" );
+	glEnableVertexAttribArray( colAttrib );
+	glVertexAttribPointer( colAttrib, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)( 2*sizeof(float) ) );
+	GLint texAttrib = glGetAttribLocation( shaderProgram, "texcoord" );
+	glEnableVertexAttribArray( texAttrib );
+	glVertexAttribPointer( texAttrib, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)( 5*sizeof(float) ) );
+
+	glFITexture Texture;
+
+;
+	if(!Texture.Load( "sample.png" ))
+		fprintf( stderr, "Failed to load texture file" );
+	Texture.Bind();
+	
+
 
 	
 	glfwEnable( GLFW_STICKY_KEYS );
  
-	while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS && glfwGetWindowParam( GLFW_OPENED ) )
+	while( glfwGetWindowParam( GLFW_OPENED ) )
 	{
-	    
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-    		// Swap buffers
-    		glfwSwapBuffers();
+   
+		glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // Swap buffers
+		glfwSwapBuffers();
+
+
+		if( glfwGetKey( GLFW_KEY_ESC ) == GLFW_PRESS )
+ 			break;
  
 	} // Check if the ESC key was pressed or the window was closed
 	
+	
+
 	glDeleteProgram( shaderProgram );
 	glDeleteShader( vertexShader );
 	glDeleteShader( fragmentShader );
 
+	glDeleteBuffers(1, & ebo);
 	glDeleteBuffers(1,  & vbo );
 	glDeleteVertexArrays(1, &vao );
 
