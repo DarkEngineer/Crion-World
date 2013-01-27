@@ -15,7 +15,7 @@ class GameIntro : public Game
 	void createWindow(int width, int height);
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
-	bool nextGameState();
+	Game * nextGameState();
 
 };
 
@@ -23,7 +23,7 @@ class GameMenu : public Game
 {
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
-	bool nextGameState();
+	Game * nextGameState();
 
 };
 
@@ -32,14 +32,14 @@ class GameOptions : public Game
 	void changeWindowSize( int width, int height );
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
-	bool nextGameState();
+	Game * nextGameState();
 };
 
 class GameMain : public Game
 {
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
-	bool nextGameState();
+	Game * nextGameState();
 };
 
 class GameHighscores : public Game
@@ -47,6 +47,6 @@ class GameHighscores : public Game
 	void loadObjects( std::vector<Object> modelObject);
 	void loadHighscores();
 	void render();
-	void nextGameState();
+	Game * nextGameState();
 };
 #endif
