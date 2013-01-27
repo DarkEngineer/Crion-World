@@ -2,16 +2,24 @@
 #define game_h
 #include "includes.h"
 
-class GameIntro
+class Game
 {
-  void createWindow(int width, int height);
+public:
+	virtual void render() =0;
+	virtual void Update() =0;
+	virtual ~Game();
+};
+
+class GameIntro : public Game
+{
+	void createWindow(int width, int height);
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
 	bool nextGameState();
 
 };
 
-class GameMenu
+class GameMenu : public Game
 {
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
@@ -19,7 +27,7 @@ class GameMenu
 
 };
 
-class GameOptions
+class GameOptions : public Game
 {
 	void changeWindowSize( int width, int height );
 	void loadObjects( std::vector<Object> modelObject);
@@ -27,14 +35,14 @@ class GameOptions
 	bool nextGameState();
 };
 
-class GameMain
+class GameMain : public Game
 {
 	void loadObjects( std::vector<Object> modelObject);
 	void render();
 	bool nextGameState();
 };
 
-class GameHighscores
+class GameHighscores : public Game
 {
 	void loadObjects( std::vector<Object> modelObject);
 	void loadHighscores();
