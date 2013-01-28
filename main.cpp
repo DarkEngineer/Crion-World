@@ -1,28 +1,17 @@
 #include "loadshader.h"
-
+#include "game.h"
 #include "loadImage.h"
+#include <SOIL\SOIL.h>
+#include <time.h>
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
 
-
-
-
-int main( int argc, char * argv[])
+int main( )
 {
-
-	printf( "Sciezka pliku to: %s\n", argv[ 0 ] );
+	Game * game = new GameIntro();
+	game->setWindow(800, 600);
 	
-	glfwInit();
-	
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
-	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-	glfwOpenWindow(800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW);
-
-	glewExperimental = GL_TRUE;
-	glewInit();
-	
-
 	if (glewInit() != GLEW_OK) 
 	{
 		fprintf(stderr, "Failed to initialize GLEW\n");
@@ -82,22 +71,6 @@ int main( int argc, char * argv[])
 	glCompileShader(fragmentShader);
 	getShaderLogInfo( fragmentShader );
 
-    GLint retParam;
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &retParam);
-    if(retParam != GL_TRUE)
-    {
-		GLint errorMsgLen = 0;
-		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &errorMsgLen);
-		if (errorMsgLen > 0)
-		{
-			GLsizei charsWritten = 0;
-			GLchar *errorMsg = new GLchar[errorMsgLen];
-			glGetShaderInfoLog(fragmentShader, errorMsgLen, &charsWritten, errorMsg);
-			fprintf(stderr, "Compilation error in shader %s: %s\n", "fragmentShader", errorMsg);
-			
-			
-		 }
-    }
 
 	GLuint shaderProgram = glCreateProgram();
 	glAttachShader( shaderProgram, vertexShader );
@@ -119,20 +92,42 @@ int main( int argc, char * argv[])
 	glVertexAttribPointer( texAttrib, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)( 5*sizeof(float) ) );
 
 	glFITexture Texture;
+	GLuint textures[ 2 ];
+	glGenTextures( 2, textures );
 
-
-	if(!Texture.Load( "sample.png" ))
-		fprintf( stderr, "Failed to load texture file" );
+	glActiveTexture( GL_TEXTURE0 );
+	glBindTexture( GL_TEXTURE_2D, textures[ 0 ] );
+	Texture.Load( "images\\sample.png" );
 	Texture.Bind();
+	glUniform1i( glGetUniformLocation( shaderProgram, "texKitten"), 0 );
+
 	
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
 
+	glActiveTexture( GL_TEXTURE1 );
+	glBindTexture( GL_TEXTURE_2D, textures[ 1 ] );
+	Texture.Load( "images\\sample2.png" );
+	Texture.Bind();
+	glUniform1i( glGetUniformLocation( shaderProgram, "texPuppy" ), 1 );
+
 	
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+
 	glfwEnable( GLFW_STICKY_KEYS );
  
 	while( glfwGetWindowParam( GLFW_OPENED ) )
 	{
-   
+		 game->render();
+		 game = game->nextGameState();
+		
 		glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // Swap buffers
 		glfwSwapBuffers();
@@ -144,7 +139,7 @@ int main( int argc, char * argv[])
 	} // Check if the ESC key was pressed or the window was closed
 	
 	
-
+	glDeleteTextures( 2, textures );
 	glDeleteProgram( shaderProgram );
 	glDeleteShader( vertexShader );
 	glDeleteShader( fragmentShader );
