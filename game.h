@@ -26,10 +26,11 @@ public:
 
 class Game
 {
-	virtual void setWindow() =0;
+public:
 	virtual void render() =0;
 	virtual void Update() =0;
-public:
+	virtual void setWindow(int width, int height) =0;
+	virtual Game * nextGameState() =0;
 	virtual ~Game();
 	
 };
