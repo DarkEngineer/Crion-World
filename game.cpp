@@ -5,7 +5,7 @@ Object::Object()
 {
 }
 Object::Object(float _x, float _y, float _width, float _height)
-  :	x( _x),
+	:	x( _x),
 		y( _y),
 		width(_width),
 		height(_height)
@@ -17,7 +17,7 @@ Game::~Game()
 {
 }
 
-void GameIntro::createWindow(int width, int height )
+void GameIntro::setWindow(int width, int height )
 {
 	glfwInit();
 	
