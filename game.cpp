@@ -32,6 +32,10 @@ void GameIntro::setWindow(int width, int height )
 	glewInit();
 }
 
+Game * GameIntro::nextGameState()
+{
+	return this;
+}
 void GameIntro::loadObjects(std::vector<Object> modelObject)
 {
 	std::fstream sourceOfImages;
