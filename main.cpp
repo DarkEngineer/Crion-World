@@ -1,5 +1,6 @@
-#include "loadshader.h"
 #include "game.h"
+#include "loadShader.h"
+#include "GameIntro.h"
 #include "loadImage.h"
 #include <SOIL\SOIL.h>
 #include <time.h>
@@ -20,9 +21,8 @@ int main( )
 	glfwSetWindowTitle("Crion World Alpha");
 	
 	
-	GLuint vertexBuffer;
-	glGenBuffers( 1, &vertexBuffer );
-	printf( "%u\n", vertexBuffer );
+	game->makeBuffer();
+	game->reserveSpace();
 
 
 	GLuint vao;
