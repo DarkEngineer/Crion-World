@@ -3,7 +3,6 @@
 #include "Shader.h"
 #include "GameIntro.h"
 #include "glFreeImage.h"
-#include <SOIL\SOIL.h>
 #include <time.h>
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
@@ -22,7 +21,9 @@ int main( )
 		return -1;
 	}
 	glfwSetWindowTitle("Crion World Alpha");
-	
+	game->init();
+	Mesh * Obj = new Mesh();
+	Obj->loadMesh("Studnia.3ds");
 	glfwEnable( GLFW_STICKY_KEYS );
 	glEnable(GL_DEPTH_TEST);
  
@@ -30,7 +31,7 @@ int main( )
 	{
 		 game->render();
 		 game = game->nextGameState();
-		
+		Obj->render();
 
     // Swap buffers
 		glfwSwapBuffers();
