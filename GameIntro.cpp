@@ -32,18 +32,13 @@ bool GameIntro::init()
 {
 	m_pGameCamera = new Camera(window_width, window_height);
 	Object.loadMesh("Studnia.3ds");
-
+	Object.render();
 	m_pEffect = new LightingTechnique();
 
 	if(!m_pEffect->init())
 		return false;
 
 	m_pEffect->enable();
-
-	m_pTexture = new Texture(GL_TEXTURE_2D, "test.png");
-
-	if(!m_pTexture->Load())
-		return false;
 
 	return true;
 }
@@ -55,12 +50,14 @@ Game * GameIntro::nextGameState()
 
 void GameIntro::render()
 {
-	int x, y;
-	glfwGetMousePos(&x, &y);
-	m_pGameCamera->onMouse(x, y);
-	m_pGameCamera->onRender();
 	
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glfwGetMousePos(&mouse_x, &mouse_y);
+
+	m_pGameCamera->onMouse(mouse_x, mouse_y);
+	m_pGameCamera->onRender();
+	Object.render();
+	
 	m_scale += 0.1f;
 
 	Pipeline p;
@@ -71,7 +68,7 @@ void GameIntro::render()
 	m_pEffect->setWVP(p.getWVPTrans());
 	m_pEffect->setDirectionalLight(m_directionalLight);
 
-	Object.render();
+	
 }
 
 void GameIntro::Update()
