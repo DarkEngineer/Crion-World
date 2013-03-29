@@ -1,34 +1,24 @@
 #include "GameIntro.h"
+#include "Pipeline.h"
 
 GameIntro::GameIntro()
 {
+	m_pGameCamera = NULL;
+	m_pTexture = NULL;
+	m_pEffect = NULL;
+	m_scale = 0.0f;
+	m_directionalLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_directionalLight.ambientIntensity = 0.5f;
 }
 
-void GameIntro::reserveSpace()
-{
-  glBufferData( GL_ARRAY_BUFFER, maxObjects, & listOfObjects, GL_DYNAMIC_DRAW );
-}
-void GameIntro::createObject()
-{
-	i = 0;
-	int x, y;
-	glfwGetMousePos( &x, &y );
-	Object obj(GameIntro::vbo, (float)x, (float)y, true, * crionProgram);
-	if(listOfObjects.size() < maxObjects )
-	{	listOfObjects.push_back( obj );
-	std::cout << "Created object number " << listOfObjects.size() << std::endl;
-	std::cout << x << " " << y << std::endl;
-	GLintptr offset = listOfObjects.size() - 1;
-	glBufferSubData(GL_ARRAY_BUFFER, offset, 1, & listOfObjects[ listOfObjects.size()-1 ] );
-	}
-
-}
 void GameIntro::setWindow(int width, int height )
 {
+	window_width = width;
+	window_height = height;
 	glfwInit();
 	
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
+	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 4);
+	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
 	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
 	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
@@ -38,32 +28,50 @@ void GameIntro::setWindow(int width, int height )
 	glewInit();
 }
 
+bool GameIntro::init()
+{
+	m_pGameCamera = new Camera(window_width, window_height);
+	Object.loadMesh("Studnia.3ds");
+
+	m_pEffect = new LightingTechnique();
+
+	if(!m_pEffect->init())
+		return false;
+
+	m_pEffect->enable();
+
+	m_pTexture = new Texture(GL_TEXTURE_2D, "test.png");
+
+	if(!m_pTexture->Load())
+		return false;
+
+	return true;
+}
 Game * GameIntro::nextGameState()
 {
 	return this;
 }
-void GameIntro::imageHandle()
-{
-	std::fstream sourceOfImages;
-	std::string name = "gameIntro.txt";
-	sourceOfImages.open(name, std::ios::in );
-	if( sourceOfImages.good() == true )
-	{
-		std::cout << "Access to file " << name << " authorized" << std::endl;
-		while( !sourceOfImages.eof() )
-			name = "";
-			std::getline( sourceOfImages, name );
-			Object temp;
-			listOfObjects.push_back( temp );
-			temp.image = name.c_str();	
-			std::cout << "Image " << name << " loaded" << std::endl;
-	}
-	else
-		std::cout << "Access denied" << std::endl;
-}
+
 
 void GameIntro::render()
 {
+	int x, y;
+	glfwGetMousePos(&x, &y);
+	m_pGameCamera->onMouse(x, y);
+	m_pGameCamera->onRender();
+	
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_scale += 0.1f;
+
+	Pipeline p;
+	p.rotate(0.0f, m_scale, 0.0f);
+	p.worldPos(0.0f, 0.0f, 3.0f);
+	p.setCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
+	p.setPerspectiveProj(60.0f,static_cast<float>(window_width), static_cast<float>(window_height), 1.0f, 100.0f);
+	m_pEffect->setWVP(p.getWVPTrans());
+	m_pEffect->setDirectionalLight(m_directionalLight);
+
+	Object.render();
 }
 
 void GameIntro::Update()
@@ -72,4 +80,7 @@ void GameIntro::Update()
 
 GameIntro::~GameIntro()
 {
+	delete m_pEffect;
+	delete m_pGameCamera;
+	delete m_pTexture;
 }
