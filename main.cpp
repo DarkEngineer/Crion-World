@@ -22,8 +22,6 @@ int main( )
 	}
 	glfwSetWindowTitle("Crion World Alpha");
 	game->init();
-	Mesh * Obj = new Mesh();
-	Obj->loadMesh("Studnia.3ds");
 	glfwEnable( GLFW_STICKY_KEYS );
 	glEnable(GL_DEPTH_TEST);
  
@@ -31,7 +29,6 @@ int main( )
 	{
 		 game->render();
 		 game = game->nextGameState();
-		Obj->render();
 
     // Swap buffers
 		glfwSwapBuffers();
