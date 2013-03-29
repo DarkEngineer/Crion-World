@@ -32,7 +32,7 @@ bool LightingTechnique::init()
 
 void LightingTechnique::setWVP(const glm::mat4 &WVP)
 {
-	glUniformMatrix4fv(m_WVPLocation, 1, GL_TRUE, &WVP[0][0]);
+	glUniformMatrix4fv(m_WVPLocation, 1, GL_FALSE, &WVP[0][0]);
 }
 
 void LightingTechnique::setTextureUnit(unsigned int TextureUnit)
