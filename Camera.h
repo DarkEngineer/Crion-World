@@ -1,14 +1,17 @@
 #ifndef Camera_h
 #define Camera_h
-#include <GL\glew.h>
-#include <GL\glfw.h>
+#include <GL/glew.h>
+#include <GL/glfw.h>
 #include <math.h>
-#include <glm\glm.hpp>
-#include <glm\gtx\rotate_vector.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtc\type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
+#ifndef M_PI
 const double M_PI = 3.14159265359;
+#endif
+
 #define toRadian(x) ((x) * M_PI / 180.0f)
 #define toDegree(x) ((x) * 180.0f / M_PI)
 
