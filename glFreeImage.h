@@ -1,4 +1,4 @@
-#include "FreeImage\FreeImage.h"
+#include "FreeImage.h"
 #include "includes.h"
 // Made by Dark Engineer
 

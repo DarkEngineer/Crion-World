@@ -1,7 +1,7 @@
 #ifndef Mesh_h
 #define Mesh_h
 
-#include "Texture.h"
+#include "Textures.h"
 #include <map>
 #include <vector>
 #include <GL/glew.h>

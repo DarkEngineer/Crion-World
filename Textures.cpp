@@ -1,4 +1,4 @@
-#include "Texture.h"
+#include "Textures.h"
 #include "glFreeImage.h"
 
 Texture::Texture()
