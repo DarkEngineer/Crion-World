@@ -1,12 +1,12 @@
 #ifndef Pipeline_h
 #define Pipeline_h
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <math.h>
-#include <GL\glfw.h>
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\core\type_mat4x4.hpp>
-#include <glm\gtc\type_ptr.hpp>
+#include <GL/glfw.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/core/type_mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 

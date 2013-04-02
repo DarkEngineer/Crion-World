@@ -1,4 +1,4 @@
-#include "loadImage.h"
+#include "glFreeImage.h"
 
 glFreeImage::glFreeImage()
   :	t_Image( 0 )
