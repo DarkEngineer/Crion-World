@@ -4,9 +4,9 @@
 #include "GameIntro.h"
 #include "glFreeImage.h"
 #include <time.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
 
 int main( )
 {
@@ -14,6 +14,8 @@ int main( )
 	float height = 600.0f;
 	Game * game = new GameIntro();
 	game->setWindow(static_cast<int>(width), static_cast<int>(height));
+
+	
 	
 	if (glewInit() != GLEW_OK) 
 	{
@@ -27,9 +29,11 @@ int main( )
  
 	while( glfwGetWindowParam( GLFW_OPENED ) )
 	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		 game->render();
+		
 		 game = game->nextGameState();
-
+		 
     // Swap buffers
 		glfwSwapBuffers();
 

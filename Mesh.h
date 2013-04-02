@@ -1,7 +1,7 @@
 #ifndef Mesh_h
 #define Mesh_h
 
-#include "Textures.h"
+#include "Texture.h"
 #include <map>
 #include <vector>
 #include <GL/glew.h>
@@ -28,7 +28,7 @@ struct Vertex
 
 class Mesh
 {
-  bool initFromScene(const aiScene* pScene, const std::string &Filename);
+	bool initFromScene(const aiScene* pScene, const std::string &Filename);
 	void initMesh(unsigned int index, const aiMesh* paiMesh);
 	bool initMaterials(const aiScene* pScene, const std::string &Filename);
 	void clear();

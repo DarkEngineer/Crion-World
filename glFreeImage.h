@@ -1,14 +1,16 @@
-#include "FreeImage.h"
+#ifndef glFreeImage_h
+#define glFreeImage_h
+#include "FreeImage\FreeImage.h"
 #include "includes.h"
 // Made by Dark Engineer
 
 // class for loading an image from disk
 class glFreeImage
 {
-  FIBITMAP * t_Image;
+	FIBITMAP * t_Image;
 	public:
 		glFreeImage();
-		~glFreeImage();
+		virtual ~glFreeImage();
 			
 	bool Load( const std::string & s_Filename ); // load a new image file
 
@@ -21,15 +23,4 @@ class glFreeImage
 
 };
 
-// class for creating texture opengl textures
-class glFITexture
-{
-	GLuint t_Texture;
-	public:
-		glFITexture();
-
-		bool Load( const std::string & s_Filename ); // loading texture
-		bool LoadMipMaps( const std::string & s_Filename ); // loading texture with mipmaps
-		void Bind() const;
-};
-
+#endif

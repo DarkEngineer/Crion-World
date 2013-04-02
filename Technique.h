@@ -7,7 +7,7 @@
 
 class Technique
 {
-  GLuint m_shaderProgram;
+	GLuint m_shaderProgram;
 	typedef std::list<GLuint> shaderObjList;
 	shaderObjList m_shaderObjList;
 

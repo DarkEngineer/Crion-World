@@ -2,7 +2,7 @@
 
 Pipeline::Pipeline()
 {
-  	m_scale      = glm::vec3(1.0f, 1.0f, 1.0f);
+		m_scale      = glm::vec3(1.0f, 1.0f, 1.0f);
         m_worldPos   = glm::vec3(0.0f, 0.0f, 0.0f);
         m_rotateInfo = glm::vec3(0.0f, 0.0f, 0.0f);
 }

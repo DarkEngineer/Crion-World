@@ -8,7 +8,7 @@ Camera::Camera(int windowWidth, int windowHeight)
     m_windowWidth  = windowWidth;
     m_windowHeight = windowHeight;
     m_pos          = glm::vec3(0.0f, 0.0f, 0.0f);
-    m_target       = glm::vec3(0.0f, 0.0f, 1.0f);
+    m_target       = glm::vec3(0.0f, 0.0f, 10.0f);
 	glm::normalize(m_target);
     m_up           = glm::vec3(0.0f, 1.0f, 0.0f);
 

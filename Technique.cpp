@@ -3,7 +3,7 @@
 
 Technique::Technique()
 {
-  m_shaderProgram = 0;
+	m_shaderProgram = 0;
 }
 
 Technique::~Technique()

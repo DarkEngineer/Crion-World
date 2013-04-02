@@ -1,5 +1,5 @@
 #include "game.h"
-#include "Textures.h"
+#include "Texture.h"
 
 
 Game::Game()

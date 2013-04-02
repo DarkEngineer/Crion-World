@@ -6,13 +6,13 @@ LightingTechnique::LightingTechnique()
 
 bool LightingTechnique::init()
 {
-  if(!Technique::init())
+	if(!Technique::init())
 		return false;
 
-    if(!addShader( Shader::VERTEX_SHADER, "vslightingtechnique.glsl" ) )
+	if(!addShader( Shader::ShaderType::VERTEX_SHADER, "vslightingtechnique.glsl" ) )
 		return false;
 
-    if(!addShader( Shader::FRAGMENT_SHADER, "fslightingtechnique.glsl") )
+	if(!addShader( Shader::ShaderType::FRAGMENT_SHADER, "fslightingtechnique.glsl") )
 		return false;
 
 	if(!finalize())

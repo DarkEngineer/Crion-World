@@ -6,13 +6,13 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-  clear();
+	clear();
 }
 
 void Mesh::clear()
 {
-	for(unsigned int i = 0; i < m_Textures.size(); i++)
-		delete m_Textures[i];
+		for(unsigned int i = 0; i < m_Textures.size(); i++)
+			delete m_Textures[i];
 }
 
 Mesh::MeshEntry::MeshEntry()
@@ -140,6 +140,8 @@ bool Mesh::initMaterials(const aiScene* pScene, const std::string &filename)
 					m_Textures[i] = NULL;
 					Ret = false;
 				}
+				else
+					std::cout << "Loaded texture " << fullPath.c_str() << std::endl;
 			}
 		}
 

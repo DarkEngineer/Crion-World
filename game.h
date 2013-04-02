@@ -2,7 +2,7 @@
 #define game_h
 #include "includes.h"
 #include "Camera.h"
-#include "Textures.h"
+#include "Texture.h"
 
 class Game
 {

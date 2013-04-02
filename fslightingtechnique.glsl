@@ -6,7 +6,7 @@ out vec4 FragColor;
 
 struct DirectionalLight
 {
-  vec3 Color;
+	vec3 Color;
 	float AmbientIntensity;
 };
 

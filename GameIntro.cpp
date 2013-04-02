@@ -31,16 +31,16 @@ void GameIntro::setWindow(int width, int height )
 bool GameIntro::init()
 {
 	m_pGameCamera = new Camera(window_width, window_height);
-	Object.loadMesh("Studnia.3ds");
-	Object.render();
 	m_pEffect = new LightingTechnique();
 
 	if(!m_pEffect->init())
 		return false;
 
 	m_pEffect->enable();
+		
+	m_pMesh = new Mesh();
 
-	return true;
+	return m_pMesh->loadMesh("Studnia.3ds");
 }
 Game * GameIntro::nextGameState()
 {
@@ -50,13 +50,12 @@ Game * GameIntro::nextGameState()
 
 void GameIntro::render()
 {
-    int mouse_x, mouse_y;
+	
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glfwGetMousePos(&mouse_x, &mouse_y);
 
 	m_pGameCamera->onMouse(mouse_x, mouse_y);
 	m_pGameCamera->onRender();
-	Object.render();
 	
 	m_scale += 0.1f;
 
@@ -68,7 +67,7 @@ void GameIntro::render()
 	m_pEffect->setWVP(p.getWVPTrans());
 	m_pEffect->setDirectionalLight(m_directionalLight);
 
-	
+	m_pMesh->render();
 }
 
 void GameIntro::Update()
@@ -80,4 +79,5 @@ GameIntro::~GameIntro()
 	delete m_pEffect;
 	delete m_pGameCamera;
 	delete m_pTexture;
+	delete m_pMesh;
 }

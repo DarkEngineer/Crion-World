@@ -1,15 +1,23 @@
 #ifndef Shader_h
 #define Shader_h
 
-#include "includes.h"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <GL/glew.h>
+#include <vector>
+#include <GL/glfw.h>
 
+enum ShaderType;
 
 class Shader
 {
-  std::string source;
+	std::string source;
 	GLuint shader;
-	
-	
+	void getShaderLogInfo( GLuint shader );
+	void getProgramLogInfo( GLuint program );
+	std::string loadShaderFile(const std::string fileName);
+
 public:
 	// shader types
 	enum ShaderType
@@ -21,12 +29,12 @@ public:
 		TESS_EVALUATION_SHADER = 5,
 	} objShaderType;
 	Shader();
-	GLuint getShader();
+	GLuint getShader(); 
+	//create shader from file
 	GLuint createShaderFromFile(std::string name, ShaderType type);
 	void attachShader( GLuint program );
-	std::string loadShaderFile(const std::string fileName);
-	void getShaderLogInfo( GLuint shader );
-	void getProgramLogInfo( GLuint program );
+	
+	
 	void DelShader();
 	virtual ~Shader();
 };

@@ -16,6 +16,7 @@ void Shader::attachShader( GLuint program )
 
 GLuint Shader::createShaderFromFile( std::string name, ShaderType type)
 {
+	objShaderType = type;
 	source = name;
 	if( type == VERTEX_SHADER )
 	{
