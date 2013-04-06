@@ -23,9 +23,15 @@ void GameIntro::setWindow(int width, int height )
 	
 	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
 	glfwOpenWindow( width, height, 0, 0, 0, 0, 0, 0, GLFW_WINDOW);
+		
 
 	glewExperimental = GL_TRUE;
-	glewInit();
+	if (glewInit() != GLEW_OK) 
+	{
+		fprintf(stderr, "Failed to initialize GLEW\n");
+	}
+	GLenum string = glGetError();
+	std::cout << "Fatail error: " << gluErrorString(string) << std::endl;
 }
 
 bool GameIntro::init()

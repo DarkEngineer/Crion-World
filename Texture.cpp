@@ -1,35 +1,43 @@
 #include "Texture.h"
 #include "glFreeImage.h"
 
+	void checkerror()
+{
+	GLenum string = glGetError();
+	std::cout << "Fatail error: " << gluErrorString(string) << std::endl;
+}
+
 Texture::Texture()
 	: t_Texture( 0 )
 	{
 	}
 
 Texture::Texture(GLenum textureTarget, const std::string & filename)
-	: t_Texture( NULL )
+	: t_Texture( 0 )
 {
 	m_textureTarget = textureTarget;
 	m_filename = filename;
 }
 bool Texture::Load()
 {
+	glFreeImage * FreeImage = new glFreeImage();
+	if( !FreeImage->Load(m_filename) )
+		return false;
 	//load image using FI libs.
-	unsigned char* image = SOIL_load_image(m_filename.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
-
+	
 	glGenTextures(1, &t_Texture);
-    glBindTexture(m_textureTarget, t_Texture);
-
+	glBindTexture(m_textureTarget, t_Texture);
+	checkerror();
 	//Initialize texture with image data
-	glTexImage2D( m_textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
+	glTexImage2D(m_textureTarget, 0, GL_RGB, FreeImage->Width(), FreeImage->Height(), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage->Bits());
+	
 	// min and mag filters
 	glTexParameteri( m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri( m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri( m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	
-	SOIL_free_image_data( image );
+	
 	return true;
 }
 

@@ -2,12 +2,10 @@
 #define Texture_h
 
 #include "Shader.h"
-#include "SOIL/SOIL.h"
 
 // class for creating texture opengl textures
 class Texture
 {
-	int width, height;
 	std::string m_filename;
 	GLuint t_Texture;
 	GLenum m_textureTarget;

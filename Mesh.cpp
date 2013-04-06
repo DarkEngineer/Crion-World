@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+
 Mesh::Mesh()
 {
 }
@@ -49,13 +50,11 @@ bool Mesh::loadMesh(const std::string & filename)
 	bool Ret = false;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(filename.c_str(), aiProcessPreset_TargetRealtime_Quality);
-
+	const aiScene* pScene = importer.ReadFile(filename.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs);
 	if(pScene)
 		Ret = initFromScene(pScene, filename);
 	else
 		std::cout << "Error passing " << filename << " : " << importer.GetErrorString() << std::endl;
-
 	return Ret;
 }
 
@@ -69,6 +68,7 @@ bool Mesh::initFromScene(const aiScene* pScene, const std::string &filename)
 		const aiMesh* paiMesh = pScene->mMeshes[i];
 		initMesh(i, paiMesh);
 	}
+		
 
 	return initMaterials(pScene, filename);
 }
@@ -105,7 +105,7 @@ void Mesh::initMesh(unsigned int index, const aiMesh* paiMesh)
 
 bool Mesh::initMaterials(const aiScene* pScene, const std::string &filename)
 {
-	std::string::size_type SlashIndex = filename.find_last_of("/");
+	 std::string::size_type SlashIndex = filename.find_last_of("/");
     std::string Dir;
 
     if (SlashIndex == std::string::npos) {
@@ -127,26 +127,30 @@ bool Mesh::initMaterials(const aiScene* pScene, const std::string &filename)
 		if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) 
 		{
             aiString path;
+				
 
 			if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
 			{
 				std::string fullPath = Dir + "/" + path.data;
-				m_Textures[i] = new Texture(GL_TEXTURE_2D, fullPath.c_str());
 
+				m_Textures[i] = new Texture(GL_TEXTURE_2D, path.C_Str());
 				if(!m_Textures[i]->Load())
 				{
-					std::cout << "Error Loading texture " << fullPath.c_str() << std::endl;
+					
+					std::cout << "Error Loading texture " << path.C_Str() << std::endl;
 					delete m_Textures[i];
 					m_Textures[i] = NULL;
 					Ret = false;
 				}
 				else
-					std::cout << "Loaded texture " << fullPath.c_str() << std::endl;
+					std::cout << "Loaded texture " << path.C_Str() << std::endl;
+				
 			}
 		}
 
 		if(!m_Textures[i])
 		{
+			std::cout << "No textures" << std::endl;
 			m_Textures[i] = new Texture(GL_TEXTURE_2D, "/white.png");
 			Ret = m_Textures[i]->Load();
 		}
