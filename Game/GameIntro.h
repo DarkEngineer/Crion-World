@@ -7,7 +7,7 @@
 
 class GameIntro : public Game
 {	
-	Mesh Object;
+	Mesh * m_pMesh;
 	int window_width;
 	int window_height;
 	GLuint m_VBO;
@@ -19,6 +19,7 @@ class GameIntro : public Game
 	DirectionalLight m_directionalLight;
 	void createVertexBuffer();
 	void createIndexBuffer();
+	int mouse_x, mouse_y;
 public:
 	GameIntro();
 	Game * nextGameState();
