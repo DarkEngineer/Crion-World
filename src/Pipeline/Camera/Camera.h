@@ -4,17 +4,21 @@
 #include <GL\glfw.h>
 #include <math.h>
 #include <glm\glm.hpp>
+#include <iostream>
 #include <glm\gtx\rotate_vector.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
+#include <glm\gtx\quaternion.hpp>
 
 #define M_PI 3.14159265358979323846
 #define toRadian(x) ((x) * M_PI / 180.0f)
 #define toDegree(x) ((x) * 180.0f / M_PI)
 
+
+
 class Camera
 {
-	
+	float deltaTime;
 	glm::vec3 m_pos;
 	glm::vec3 m_target;
 	glm::vec3 m_up;
@@ -34,18 +38,24 @@ class Camera
     bool m_OnRightEdge;
 
 	glm::ivec2 m_mousePos;
+   
 
 public:
 	Camera();
 	Camera(int windowWidth, int windowHeight);
 	Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const glm::vec3 & Target, const glm::vec3 &Up );
-	bool GLFWCALL onKeyboard( int Key );
+	bool onKeyboard( int key, int action );
 	void onMouse( int x, int y );
 	void onRender();
+	static void GLFWCALL keyWrapper(int key, int action);
+	static void GLFWCALL mouseWrapper(int x, int y);
+	void setDeltaTime(double deltaTime);
 	const glm::vec3 & GetPos() const;
 	const glm::vec3 & GetTarget() const;
 	const glm::vec3 & GetUp() const;
 	~Camera();
 };
 
+extern Camera *cam;
+	
 #endif
