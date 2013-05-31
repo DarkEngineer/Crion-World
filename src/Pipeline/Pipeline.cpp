@@ -7,6 +7,11 @@ Pipeline::Pipeline()
 	m_rotateInfo = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
+Pipeline::~Pipeline()
+{
+	delete m_camera;
+}
+
 void Pipeline::scale(float scaleX, float scaleY, float scaleZ)
 {
 	m_scale.x = scaleX;
@@ -37,11 +42,9 @@ void Pipeline::setPerspectiveProj(float FOV, float width, float height, float zN
 	m_persProj.zFar = zFar;
 }
 
-void Pipeline::setCamera(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up)
+void Pipeline::setCamera(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up) // have to be implemented after setPerspectiveProj
 {
-	m_camera.pos = pos;
-	m_camera.target = target;
-	m_camera.up = up;
+	m_camera = new Camera(static_cast<int>(m_persProj.width), static_cast<int>(m_persProj.height), pos, target, up);
 }
 void Pipeline::initScaleTransform(glm::mat4 &m) const
 {
@@ -105,7 +108,7 @@ void Pipeline::initPerspectiveProj(glm::mat4 &m) const
 
 void Pipeline::initCameraTransform(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up, glm::mat4 & m)
 {
-	m = glm::lookAt(pos, target,up);
+	m = glm::lookAt(pos, target, up);
 }
 
 const glm::mat4 * Pipeline::getTrans()
@@ -115,7 +118,7 @@ const glm::mat4 * Pipeline::getTrans()
 	initScaleTransform(scaleTrans);
 	initRotateTransform(rotateTrans);
 	initTranslateTransform(translationTrans);
-	initCameraTransform(m_camera.pos, m_camera.target, m_camera.up, cameraTrans);
+	initCameraTransform(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget(), m_camera->GetUp(), cameraTrans);
 	initPerspectiveProj(perspectiveProjTrans);
 
 	m_transformation = perspectiveProjTrans * cameraTrans * translationTrans * rotateTrans * scaleTrans;

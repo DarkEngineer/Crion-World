@@ -1,40 +1,45 @@
-#include "game.h"
-#include "Mesh.h"
-#include "Shader.h"
-#include "GameIntro.h"
-#include "glFreeImage.h"
+ 
+#include <GL/glew.h>
+#include <GL/glfw.h>
+#include <GL/GL.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 #include <time.h>
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtc\type_ptr.hpp>
+#include "Game/Game.h"
 
-
-int main( )
+ 
+int main()
 {
-	float width = 800.0f;
-	float height = 600.0f;
-	Game * game = new GameIntro();
-	game->setWindow(static_cast<int>(width), static_cast<int>(height));
-	glfwSetWindowTitle("Crion World Alpha");
-	glfwEnable( GLFW_STICKY_KEYS );
- 
-	Mesh * mesh = new Mesh();
-	mesh->loadMesh("Studnia.3ds");
-	glEnable(GL_DEPTH_TEST);
-	while( glfwGetWindowParam( GLFW_OPENED ) )
+	Game * application = new Game();
+	application->createWindow(800, 600);
+	GLenum res = glewInit();
+	if( res != GLEW_OK)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		mesh->render();
-		 game = game->nextGameState();
-		 
-    // Swap buffers
-		glfwSwapBuffers();
-
-		if( glfwGetKey( GLFW_KEY_ESC ) == GLFW_PRESS )
- 			break;
- 
-	} // Check if the ESC key was pressed or the window was closed
+		std::cout << "Error: " << glewGetErrorString(res) << std::endl;
+		return 0;
+	}
+	application->init();
 	
+	//GLint gWorldLocation = glGetUniformLocation(shaderProgram, "gWorld");
+	//GLint posAttrib = glGetAttribLocation(shaderProgram, "position" );
+	//GLint texAttrib = glGetAttribLocation(shaderProgram, "texCoord0");
+	//GLint gSampler = glGetUniformLocation(shaderProgram, "gSampler");
+
+	glEnable(GL_DEPTH_TEST);
+
+	glfwEnable(GLFW_KEY_REPEAT);
+
+	glfwSetKeyCallback(Game::keyboardWrapper);
+	//glfwSetCharCallback(Camera::keyWrapper);
+	//glfwSetMouseButtonCallback(Camera::mouseButtonWrapper);
+	//glfwSetMousePosCallback(Camera::mousePosWrapper);
+	glEnable(GL_CULL_FACE);
+	while(glfwGetWindowParam(GLFW_OPENED) && !(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) )
+	{
+		application->render();
+	}
 	
 	glfwTerminate();
 	return 0;

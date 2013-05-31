@@ -1,12 +1,12 @@
 #ifndef Texture_h
 #define Texture_h
 
-#include "Shader.h"
+#include "../shader_manager/Shader.h"
 
 // class for creating texture opengl textures
 class Texture
 {
-  std::string m_filename;
+	std::string m_filename;
 	GLuint t_Texture;
 	GLenum m_textureTarget;
 	public:

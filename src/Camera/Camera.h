@@ -19,11 +19,14 @@
 class Camera
 {
 	float deltaTime; // delta time for moving
-	
+	float lastTime;
 	//camera basic details
 	glm::vec3 m_pos;
 	glm::vec3 m_target;
 	glm::vec3 m_up;
+	glm::vec3 m_right;
+
+	glm::mat4 lookAtMatrix;
 
 	void Init();
     void Update();
@@ -52,25 +55,33 @@ class Camera
 	struct
 	{
 		glm::ivec2 m_mouseCursorLastPos; 	// mouse last position before set mouse coordinations to screen center
+		glm::ivec2 m_mouseCursorCurrentPos; // mouse current position
 		bool bMouseLastPos;
 		float mouseSpeed;
-	} s_mouse;
+	};
 public:
 	Camera();
 	Camera(int windowWidth, int windowHeight);
 	Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const glm::vec3 & Target, const glm::vec3 &Up );
+
 	bool onKeyboard( int key, int action );
 	void onMouseButton(int button, int action);
 	void onMousePos(int x, int y );
 	void onRender();
+		
 	static void GLFWCALL keyWrapper(int key, int action);
 	static void GLFWCALL mouseButtonWrapper(int button, int action);
 	static void GLFWCALL mousePosWrapper(int x, int y);
-	void setDeltaTime(double deltaTime);
+
+	float getDeltaTime();
+	void checkFPS();
+	void setLastTime(float lastTime);
+	
 	const glm::vec3 & GetPos() const;
 	const glm::vec3 & GetTarget() const;
 	const glm::vec3 & GetUp() const;
-	~Camera();
+	const glm::mat4 & GetLookAt() const;
+	virtual ~Camera();
 };
 
 extern Camera *cam;

@@ -34,6 +34,8 @@ Camera::Camera(int windowWidth, int windowHeight)
     m_target       = glm::vec3(0.0f, 0.0f, -10.0f);
 	glm::normalize(m_target);
     m_up           = glm::vec3(0.0f, 1.0f, 0.0f);
+	deltaTime = 0.0f;
+	lastTime = 0.0f;
 
     Init();
 }
@@ -47,36 +49,17 @@ Camera::Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const gl
 	m_target = glm::normalize(m_target);
 	m_up = Up;
 	m_up = glm::normalize(m_up);
-	s_mouse.mouseSpeed = 15.0f;
+	mouseSpeed = 100.0f;
+	m_AngleH = 3.14f;
+	m_AngleV = 0.0f;
+	deltaTime = 0.0f;
+	lastTime = 0.0f;
 
-	glfwSetMousePos(m_windowWidth/ 2, m_windowHeight/2);
 	Init();
 }
 
 void Camera::Init()
 {
-	glm::vec3 hTarget(m_target.x, 0.0f, m_target.z);
-	hTarget = glm::normalize(hTarget);
-
-	if( hTarget.z >= 0.0f)
-	{
-		if(hTarget.x >= 0.0f)
-			m_AngleH = static_cast<float>(360.0f - toDegree( glm::asin(hTarget.z) ));
-		else
-			m_AngleH = static_cast<float>(180.0f + toDegree( glm::asin(hTarget.z) ));
-
-
-	}
-	else
-	{
-		if(hTarget.x >= 0.0f)
-			m_AngleH = static_cast<float>(toDegree(glm::asin(hTarget.z)));
-		else
-			m_AngleH = static_cast<float>(90.0f + toDegree(glm::asin(-hTarget.z) ));
-
-	}
-
-	m_AngleV = static_cast<float>(-toDegree(glm::asin(m_target.y)));
 
 	m_OnUpperEdge = false;
 	m_OnLowerEdge = false;
@@ -85,7 +68,7 @@ void Camera::Init()
 	m_mousePos.x = m_windowWidth / 2;
 	m_mousePos.y = m_windowHeight / 2;
 
-	glfwSetMousePos(m_mousePos.x, m_mousePos.y);
+
 }
 
 const glm::vec3 & Camera::GetPos() const
@@ -101,6 +84,11 @@ const glm::vec3 & Camera::GetTarget() const
 const glm::vec3 & Camera::GetUp() const
 {
 	return m_up;
+}
+
+const glm::mat4 & Camera::GetLookAt() const
+{
+	return lookAtMatrix;
 }
 
 void Camera::onMouseButton(int button, int action)
@@ -119,87 +107,46 @@ void Camera::onMousePos(int x, int y )
 {
 	if(m_mousePosState == MOUSE_RIGHT_BUTTON_PRESS)
 	{
- 		s_mouse.m_mouseCursorLastPos = glm::ivec2(x, y);
-		s_mouse.bMouseLastPos = false;
+
+		m_mouseCursorLastPos = glm::ivec2(x, y);
 		glfwDisable(GLFW_MOUSE_CURSOR);
 		glfwSetMousePos(m_windowWidth/2, m_windowHeight/2);
-		const int deltaX = x - m_mousePos.x;
-		const int deltaY = y - m_mousePos.y;
-		m_mousePos.x = x;
-		m_mousePos.y = y;
-		m_AngleH += static_cast<float>(deltaX) * deltaTime * s_mouse.mouseSpeed;
-		m_AngleV += static_cast<float>(deltaY) * deltaTime * s_mouse.mouseSpeed;
-		if( deltaX == 0 )
-		{
-			if( x < m_windowWidth / 2 && x >= 0 )
-				m_OnLeftEdge = true;
-			else if( x > m_windowWidth /2 && x >= m_windowWidth )
-				m_OnRightEdge = true;
-		}
-		else
-		{
-			m_OnLeftEdge = false;
-			m_OnRightEdge = false;
-		}
-
-		if( deltaY == 0)
-		{
-			if( y < m_windowHeight / 2 && y >= 0 )
-				m_OnUpperEdge = true;
-			else if( y > m_windowHeight / 2 && y <= m_windowHeight )
-				m_OnLowerEdge = true;
-		}
-		else
-		{
-			m_OnUpperEdge = false;
-			m_OnLowerEdge = false;
-		}
-
+		m_AngleH += mouseSpeed * deltaTime * static_cast<float>((m_windowWidth/2 - x));
+		m_AngleV += mouseSpeed * deltaTime * static_cast<float>((m_windowHeight/2 - y));
+		if(m_AngleV > 90.0f)
+			m_AngleV = 90.0f;
+		if(m_AngleV < -90.0f)
+			m_AngleV = -90.0f;
+		glm::vec3 direction(cos(m_AngleV) * sin(m_AngleH), sin(m_AngleV), cos(m_AngleV) * cos(m_AngleH));
+		m_target = direction;
+		glm::vec3 right(sin(m_AngleH - 3.14f/2.0f), 0, cos(m_AngleH - 3.14f/2.0f));
+		m_up = glm::cross(right, direction);
+		bMouseLastPos = false;
 	}
 
-	if(m_mousePosState == MOUSE_RIGHT_BUTTON_RELEASE && s_mouse.bMouseLastPos == false)
+	if(m_mousePosState == MOUSE_RIGHT_BUTTON_RELEASE && bMouseLastPos == false)
 	{
-		s_mouse.bMouseLastPos = true;
-		glfwSetMousePos(s_mouse.m_mouseCursorLastPos.x, s_mouse.m_mouseCursorLastPos.y);
+		bMouseLastPos = true;
 		glfwEnable(GLFW_MOUSE_CURSOR);
+		glfwSetMousePos(m_mouseCursorLastPos.x, m_mouseCursorLastPos.y);
 	}  
 
 	Update();
 }
 
+void Camera::checkFPS()
+{
+	double currentTime = glfwGetTime();
+	deltaTime = currentTime - lastTime;
+	lastTime = currentTime;
+}
+
+void Camera::setLastTime(float lastTime)
+{
+	this->lastTime = lastTime;
+}
 void Camera::onRender()
 {
-	bool shouldUpdate = false;
-
-	if(m_OnLeftEdge)
-	{
-		m_AngleH -= s_mouse.mouseSpeed * deltaTime;
-		shouldUpdate = true;
-	}
-	else if(m_OnRightEdge) 
-	{
-		m_AngleH += s_mouse.mouseSpeed * deltaTime;
-		shouldUpdate = true;
-	}
-
-	if(m_OnUpperEdge)
-	{
-		if(m_AngleV > - 90.0f)
-		{
-			m_AngleV -= s_mouse.mouseSpeed * deltaTime;
-			shouldUpdate = true;
-		}
-	}
-	else if(m_OnLowerEdge)
-	{
-		if(m_AngleV < 90.0f)
-		{
-			m_AngleV += s_mouse.mouseSpeed * deltaTime;
-			shouldUpdate = true;
-		}
-	}
-
-	if(shouldUpdate)
 		Update();
 }
 bool Camera::onKeyboard( int Key, int action)
@@ -210,40 +157,41 @@ bool Camera::onKeyboard( int Key, int action)
 		{
 		case GLFW_KEY_UP:
 			{
-				m_pos += (m_target * deltaTime * 100.0f );
+				m_pos += (m_target) * deltaTime * (10 * mouseSpeed);
 				Ret = true;
 			} break;
 		case GLFW_KEY_DOWN:
 			{
-				m_pos -= (m_target * deltaTime * 100.0f );
+				m_pos -= (m_target) * deltaTime * (10 * mouseSpeed);
 				Ret = true;
 			} break;
 		case GLFW_KEY_LEFT:
 			{
-				glm::vec3 left = glm::cross(m_up, m_target);
-				left = glm::normalize(left);
-				left *= deltaTime * 100.0f;
-				m_pos += left;
+				m_pos += glm::cross(m_pos + m_target, m_up) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		case GLFW_KEY_RIGHT:
 			{
-				glm::vec3 right = glm::cross(m_target, m_up);
-				right = glm::normalize(right);
-				right *= deltaTime * 100.0f;
-				m_pos += right;
+				m_pos += glm::cross(m_up, m_pos + m_target) * deltaTime * mouseSpeed;
+				Ret = true;
+			} break;
+		case 'q':
+			{
+				m_pos += glm::vec3(0, 1, 0) * deltaTime * mouseSpeed;
+				Ret = true;
+			} break;
+		case 'e':
+			{
+				m_pos += glm::vec3(0, -1, 0) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		}
-		//std::cout << GetTarget().p << " Target " << GetTarget().s << " " <<  GetTarget().t << std::endl;
-		//std::cout << GetPos().p << " Pos " <<  GetPos().s << " " <<  GetPos().t << std::endl;
-
 	return Ret;
 }
 
-void Camera::setDeltaTime(double deltaTime)
+float Camera::getDeltaTime()
 {
-	this->deltaTime = static_cast<float>(deltaTime);
+	return deltaTime;
 }
 
 void Camera::Update()
@@ -267,8 +215,6 @@ void Camera::Update()
 	view = rotationQhAxis * view * conjugateQhAxis;
 	m_target = view;
 	m_target = glm::normalize(m_target);
-	//std::cout << "Target vector: " << m_target.x << " " << m_target.y << " " << m_target.z << std::endl;
-	//std::cout << "m_AngleV: " << m_AngleV << " " << "m_AngleH: " << m_AngleH << std::endl;
 	m_up = glm::cross(m_target, hAxis);
 	m_up = glm::normalize(m_up);
 }

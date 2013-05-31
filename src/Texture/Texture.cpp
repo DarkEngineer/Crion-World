@@ -1,33 +1,42 @@
-#include "Textures.h"
+#include "Texture.h"
 #include "glFreeImage.h"
 
+	void checkerror()
+{
+	GLenum string = glGetError();
+	std::cout << "Fatail error: " << gluErrorString(string) << std::endl;
+}
+
 Texture::Texture()
-  : t_Texture( 0 )
+	: t_Texture( 0 )
 	{
 	}
 
 Texture::Texture(GLenum textureTarget, const std::string & filename)
-	: t_Texture( NULL )
+	: t_Texture( 0 )
 {
 	m_textureTarget = textureTarget;
 	m_filename = filename;
 }
 bool Texture::Load()
 {
-	//load image using FI libs.
-	glFreeImage FreeImage;
-	if( !FreeImage.Load( m_filename ) )
+	glFreeImage * FreeImage = new glFreeImage();
+	if( !FreeImage->Load(m_filename) )
 		return false;
-
+	//load image using FI libs.
+	
 	glGenTextures(1, &t_Texture);
-    glBindTexture(m_textureTarget, t_Texture);
-
+	glBindTexture(m_textureTarget, t_Texture);
+	checkerror();
 	//Initialize texture with image data
-	glTexImage2D( m_textureTarget, 0, GL_RGBA, FreeImage.Width(), FreeImage.Height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, FreeImage.Bits() );
-
+	glTexImage2D(m_textureTarget, 0, GL_RGB, FreeImage->Width(), FreeImage->Height(), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage->Bits());
+	
 	// min and mag filters
+	glTexParameteri( m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri( m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri( m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	
 	
 	return true;
 }
