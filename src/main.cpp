@@ -21,21 +21,14 @@ int main()
 		return 0;
 	}
 	application->init();
-	
-	//GLint gWorldLocation = glGetUniformLocation(shaderProgram, "gWorld");
-	//GLint posAttrib = glGetAttribLocation(shaderProgram, "position" );
-	//GLint texAttrib = glGetAttribLocation(shaderProgram, "texCoord0");
-	//GLint gSampler = glGetUniformLocation(shaderProgram, "gSampler");
-
 	glEnable(GL_DEPTH_TEST);
 
 	glfwEnable(GLFW_KEY_REPEAT);
 
 	glfwSetKeyCallback(Game::keyboardWrapper);
-	//glfwSetCharCallback(Camera::keyWrapper);
-	//glfwSetMouseButtonCallback(Camera::mouseButtonWrapper);
-	//glfwSetMousePosCallback(Camera::mousePosWrapper);
-	glEnable(GL_CULL_FACE);
+	glfwSetMouseButtonCallback(Game::mouseButtonWrapper);
+	glfwSetMousePosCallback(Game::mousePosWrapper);
+	//glEnable(GL_CULL_FACE);
 	while(glfwGetWindowParam(GLFW_OPENED) && !(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) )
 	{
 		application->render();
