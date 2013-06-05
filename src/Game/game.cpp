@@ -4,7 +4,6 @@ Game * game;
 
 Game::Game()
 {
-	pipe = NULL;
 	m_pEffect = NULL;
 	mesh = new Mesh();
 	m_scale = 1.0f;
@@ -108,6 +107,5 @@ void Game::mouseButtonWrapper(int button, int action)
 
 void Game::mousePosWrapper(int x, int y)
 {
-	Camera * camera = pipeline->getCamera();
-	camera->onMousePos(x, y);
+	cam->onMousePos(x, y);
  }
