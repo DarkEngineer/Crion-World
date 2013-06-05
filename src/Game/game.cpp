@@ -4,8 +4,9 @@ Game * game;
 
 Game::Game()
 {
-	m_pGameCamera = NULL;
+	pipe = NULL;
 	m_pEffect = NULL;
+	mesh = new Mesh();
 	m_scale = 1.0f;
 	m_directionalLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	m_directionalLight.ambientIntensity = 0.5f;
@@ -15,14 +16,17 @@ Game::Game()
 
 Game::~Game()
 {
-	delete m_pGameCamera;
+	delete pipe;
 	delete m_pEffect;
+	delete mesh;
 }
 
 void Game::createWindow(int windowWidth, int windowHeight)
 {
+	m_windowWidth = windowWidth;
+	m_windowHeight = windowHeight;
 	glfwInit();
- 
+	
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 4);
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
 	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -35,45 +39,46 @@ void Game::createWindow(int windowWidth, int windowHeight)
 
 bool Game::init()
 {
-	m_pGameCamera = new Camera(m_windowWidth, m_windowHeight);
-
+	Pipeline * pipe = new Pipeline();
+	pipe->setCamera(m_windowWidth, m_windowHeight);
+	pipe->init();
 	m_pEffect = new LightingTechnique();
 
-	m_pGameCamera->setLastTime(static_cast<float>(glfwGetTime()));
 	if(!m_pEffect->init())
 		return false;
 
 	m_pEffect->enable();
-
-	mesh = new Mesh();
 	std::string filename = "images";
-	if(mesh->texturePath(filename))
+	if(mesh->setTexturePath(filename))
 		mesh->loadMesh("models/studnia.3ds");
 	else
 		return false;
+	std::cout << "Texture: " << * getMesh()->getTexturePath() << std::endl;
 
 	return true;
 }
 
 void Game::render()
 {
-	m_pGameCamera->checkFPS();	
-	m_pGameCamera->onRender();
+	pipe->render();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_scale += sinf(0.1f * static_cast<float>(M_PI));
 
-	Pipeline * p = new Pipeline();
-
-	p->rotate(0.0f, m_scale, 0.0f);
-	p->worldPos(0.0f, 0.0f, 3.0f);
-	p->setCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
-	p->setPerspectiveProj(60.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
-	m_pEffect->setWVP(* p->getTrans());
+	pipe->rotate(0.0f, m_scale, 0.0f);
+	pipe->worldPos(0.0f, 0.0f, 3.0f);
+	pipe->setPerspectiveProj(60.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
+	pipe->setCamera(pipe->getCamera()->GetPos(), pipe->getCamera()->GetTarget(), pipe->getCamera()->GetUp());
+	m_pEffect->setWVP(* pipe->getTrans());
 	m_pEffect->setDirectionalLight(m_directionalLight);
 	mesh->render();
 	glfwSwapBuffers();
+}
+
+Mesh * Game::getMesh()
+{
+	return mesh;
 }
 
 void Game::onKeyboard(int key, int action)
@@ -92,6 +97,17 @@ void Game::onKeyboard(int key, int action)
 void Game::keyboardWrapper(int key, int action)
 {
 	cam->onKeyboard(key, action);
-	game->onKeyboard(key,action);
+	game->onKeyboard(key, action);
 
 }
+
+void Game::mouseButtonWrapper(int button, int action)
+{
+	cam->onMouseButton(button, action);
+}
+
+void Game::mousePosWrapper(int x, int y)
+{
+	Camera * camera = pipeline->getCamera();
+	camera->onMousePos(x, y);
+ }

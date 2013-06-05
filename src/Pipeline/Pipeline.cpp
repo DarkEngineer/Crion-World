@@ -1,10 +1,17 @@
 #include "Pipeline.h"
 
+Pipeline * pipeline;
+
 Pipeline::Pipeline()
 {
 	m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	m_worldPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_rotateInfo = glm::vec3(0.0f, 0.0f, 0.0f);
+	m_persProj.FOV = 60.0f;
+	m_persProj.width = 800.0f;
+	m_persProj.height = 600.0f;
+	m_persProj.zNear = 0.001f;
+	m_persProj.zFar = 100.0f;
 }
 
 Pipeline::~Pipeline()
@@ -12,6 +19,10 @@ Pipeline::~Pipeline()
 	delete m_camera;
 }
 
+Camera * Pipeline::getCamera()
+{
+	return m_camera;
+}
 void Pipeline::scale(float scaleX, float scaleY, float scaleZ)
 {
 	m_scale.x = scaleX;
@@ -42,10 +53,27 @@ void Pipeline::setPerspectiveProj(float FOV, float width, float height, float zN
 	m_persProj.zFar = zFar;
 }
 
-void Pipeline::setCamera(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up) // have to be implemented after setPerspectiveProj
+void Pipeline::init()
+{
+	m_camera->setLastTime(static_cast<float>(glfwGetTime()));
+}
+
+// have to be implemented after setPerspectiveProj
+void Pipeline::setCamera(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up) 
 {
 	m_camera = new Camera(static_cast<int>(m_persProj.width), static_cast<int>(m_persProj.height), pos, target, up);
 }
+
+void Pipeline::setCamera(const int & windowWidth, const int & windowHeight)
+{
+	m_camera = new Camera(windowWidth, windowHeight);
+}
+
+void Pipeline::render()
+{
+	m_camera->onRender();
+}
+
 void Pipeline::initScaleTransform(glm::mat4 &m) const
 {
 	m = glm::mat4(m_scale.x, 0.0f,		0.0f,		0.0f,

@@ -34,8 +34,12 @@ Camera::Camera(int windowWidth, int windowHeight)
     m_target       = glm::vec3(0.0f, 0.0f, -10.0f);
 	glm::normalize(m_target);
     m_up           = glm::vec3(0.0f, 1.0f, 0.0f);
+	mouseSpeed = 100.0f;
+	m_AngleH = 3.14f;
+	m_AngleV = 0.0f;
 	deltaTime = 0.0f;
 	lastTime = 0.0f;
+	m_mousePosState = MOUSE_RIGHT_BUTTON_RELEASE;
 
     Init();
 }
@@ -54,21 +58,20 @@ Camera::Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const gl
 	m_AngleV = 0.0f;
 	deltaTime = 0.0f;
 	lastTime = 0.0f;
+	m_mouseCursorLastPos = glm::ivec2(0, 0);
+	m_mousePosState = MOUSE_RIGHT_BUTTON_RELEASE;
 
 	Init();
 }
 
 void Camera::Init()
 {
-
 	m_OnUpperEdge = false;
 	m_OnLowerEdge = false;
 	m_OnLeftEdge = false;
 	m_OnRightEdge = false;
 	m_mousePos.x = m_windowWidth / 2;
 	m_mousePos.y = m_windowHeight / 2;
-
-
 }
 
 const glm::vec3 & Camera::GetPos() const
@@ -105,10 +108,10 @@ void Camera::onMouseButton(int button, int action)
 
 void Camera::onMousePos(int x, int y )
 {
+	m_mouseCursorLastPos = glm::ivec2(x, y);
+
 	if(m_mousePosState == MOUSE_RIGHT_BUTTON_PRESS)
 	{
-
-		m_mouseCursorLastPos = glm::ivec2(x, y);
 		glfwDisable(GLFW_MOUSE_CURSOR);
 		glfwSetMousePos(m_windowWidth/2, m_windowHeight/2);
 		m_AngleH += mouseSpeed * deltaTime * static_cast<float>((m_windowWidth/2 - x));
@@ -136,7 +139,7 @@ void Camera::onMousePos(int x, int y )
 
 void Camera::checkFPS()
 {
-	double currentTime = glfwGetTime();
+	float currentTime = static_cast<float>(glfwGetTime());
 	deltaTime = currentTime - lastTime;
 	lastTime = currentTime;
 }
@@ -145,9 +148,11 @@ void Camera::setLastTime(float lastTime)
 {
 	this->lastTime = lastTime;
 }
+
 void Camera::onRender()
 {
-		Update();
+	checkFPS();	
+	Update();
 }
 bool Camera::onKeyboard( int Key, int action)
 {

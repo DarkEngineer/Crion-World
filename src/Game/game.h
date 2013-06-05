@@ -5,11 +5,12 @@
 #include "../Mesh/Mesh.h"
 #include "../Pipeline/Pipeline.h"
 #include <GL/glfw.h>
+#include <string>
 
 class Game
 {
 	LightingTechnique * m_pEffect;
-	Camera * m_pGameCamera;
+	Pipeline * pipe;
 	float m_scale;
 	DirectionalLight m_directionalLight;
 	Mesh * mesh;
@@ -28,6 +29,7 @@ public:
 
 	bool init();
 	virtual void render();
+	Mesh * getMesh();
 
 	void onKeyboard(int key, int action);
 	static void GLFWCALL keyboardWrapper( int key, int action);

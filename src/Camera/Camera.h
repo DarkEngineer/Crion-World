@@ -76,7 +76,8 @@ public:
 	float getDeltaTime();
 	void checkFPS();
 	void setLastTime(float lastTime);
-	
+
+
 	const glm::vec3 & GetPos() const;
 	const glm::vec3 & GetTarget() const;
 	const glm::vec3 & GetUp() const;

@@ -39,9 +39,16 @@ public:
 	void rotate(float rotateX, float rotateY, float rotateZ);
 	void setPerspectiveProj(float FOV, float width, float height, float zNear, float zFar);
 	void setCamera(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up);
+	void setCamera(const int & windowWidth, const int & windowHeight);
+	Camera * getCamera();
+
+	virtual void init();
+	virtual void render();
+
 	
 	const glm::mat4 * getTrans();
 	virtual ~Pipeline();
 };
 
+extern Pipeline * pipeline;
 #endif
