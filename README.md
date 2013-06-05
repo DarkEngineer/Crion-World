@@ -1,4 +1,4 @@
 Crion-World
 ===========
 
-2D adventure game made with c++ and OpenGL
+3D adventure game made with c++ and OpenGL
