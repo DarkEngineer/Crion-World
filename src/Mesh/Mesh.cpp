@@ -7,6 +7,9 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {
   clear();
+  delete & m_Entries;
+  delete & m_Textures;
+  delete & m_texturePath;
 }
 
 void Mesh::clear()
@@ -14,7 +17,6 @@ void Mesh::clear()
 	for(unsigned int i = 0; i < m_Textures.size(); i++)
 		delete m_Textures[i];
 	
-	delete m_texturePath;
 }
 
 Mesh::MeshEntry::MeshEntry()
@@ -61,18 +63,31 @@ bool Mesh::loadMesh(const std::string & filename)
 	return Ret;
 }
 
-// reading path of file where textures are contained
-bool Mesh::texturePath( const std::string &filename)
+// reading path of file where textures are contained in string
+bool Mesh::setTexturePath(std::string &filename)
 {
-	
 	std::string undef = "";
-	m_texturePath = & filename;
-	if(!(m_texturePath == & filename && m_texturePath != const_cast<std::string*> (&undef)) )
-	{
+	m_texturePath = filename;
+	if(!(m_texturePath == filename && m_texturePath != undef) )
 		return false;
-	}
 
 	return true;
+}
+
+// reading path in chars
+bool Mesh::setTexturePath(const char* & filename)
+{
+	std::string undef = "";
+	m_texturePath = filename;
+	if(!(m_texturePath == filename && m_texturePath != undef))
+		return false;
+
+	return true;
+}
+
+std::string * Mesh::getTexturePath()
+{
+	return & m_texturePath;
 }
 bool Mesh::initFromScene(const aiScene* pScene, const std::string &filename)
 {
@@ -143,14 +158,13 @@ bool Mesh::initMaterials(const aiScene* pScene, const std::string &filename)
 		{
             aiString path;
 			std::string slash = "/";
-			std::string texPath = * m_texturePath;
 
 			if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
 			{
 				std::string fullPath;
-				if(m_texturePath != NULL)
+				if(&m_texturePath != NULL)
 				{
-					fullPath = texPath.c_str() + slash + path.data;
+					fullPath = m_texturePath + slash + path.data;
 				}
 				else
 				{

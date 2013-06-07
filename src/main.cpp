@@ -25,10 +25,9 @@ int main()
 
 	glfwEnable(GLFW_KEY_REPEAT);
 
-	glfwSetKeyCallback(Game::keyboardWrapper);
 	glfwSetMouseButtonCallback(Game::mouseButtonWrapper);
-	glfwSetMousePosCallback(Game::mousePosWrapper);
-	//glEnable(GL_CULL_FACE);
+	glfwSetKeyCallback(Game::keyboardWrapper);
+	glEnable(GL_CULL_FACE);
 	while(glfwGetWindowParam(GLFW_OPENED) && !(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) )
 	{
 		application->render();

@@ -33,6 +33,7 @@ class Pipeline
 
 	
 public:
+
 	Pipeline();
 	void scale(float scaleX, float scaleY, float scaleZ);
 	void worldPos(float x, float y, float z);
@@ -50,5 +51,4 @@ public:
 	virtual ~Pipeline();
 };
 
-extern Pipeline * pipeline;
 #endif

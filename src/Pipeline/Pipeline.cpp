@@ -17,6 +17,11 @@ Pipeline::Pipeline()
 Pipeline::~Pipeline()
 {
 	delete m_camera;
+	delete & m_persProj;
+	delete & m_scale;
+	delete & m_worldPos;
+	delete & m_rotateInfo;
+	delete & m_transformation;
 }
 
 Camera * Pipeline::getCamera()

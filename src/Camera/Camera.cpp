@@ -226,9 +226,13 @@ void Camera::Update()
 
 Camera::~Camera()
 {
+	delete & deltaTime;
+	delete & lastTime;
 	delete & m_pos;
 	delete & m_target;
 	delete & m_up;
+	delete & m_right;
+	delete & lookAtMatrix;
     delete & m_windowWidth;
     delete & m_windowHeight;
 
@@ -241,4 +245,9 @@ Camera::~Camera()
     delete & m_OnRightEdge;
 
 	delete & m_mousePos;
+	delete & m_mousePosState;
+	delete & m_mouseCursorCurrentPos;
+	delete & m_mouseCursorLastPos;
+	delete & bMouseLastPos;
+	delete & mouseSpeed;
 }

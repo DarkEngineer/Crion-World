@@ -22,7 +22,7 @@ bool LightingTechnique::init()
 		return false;
 	glBindFragDataLocation(getShaderProg(), 0, "FragColor");
 
-	m_WVPLocation = getUniformLocation("gWVP");
+	m_WVPLocation = getUniformLocation("gWorld");
 	m_samplerLocation = getUniformLocation("gSampler");
 	m_dirLightColorLocation = getUniformLocation("gDirectionalLight.color");
 	m_dirLightAmbientIntensityLocation = getUniformLocation("gDirectionalLight.ambientIntensity");	

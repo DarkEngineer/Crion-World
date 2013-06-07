@@ -4,7 +4,6 @@ Game * game;
 
 Game::Game()
 {
-	m_pEffect = NULL;
 	mesh = new Mesh();
 	m_scale = 1.0f;
 	m_directionalLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -18,6 +17,10 @@ Game::~Game()
 	delete pipe;
 	delete m_pEffect;
 	delete mesh;
+	delete & m_scale;
+	delete & m_directionalLight;
+	delete & m_windowWidth;
+	delete & m_windowHeight;
 }
 
 void Game::createWindow(int windowWidth, int windowHeight)
@@ -38,7 +41,7 @@ void Game::createWindow(int windowWidth, int windowHeight)
 
 bool Game::init()
 {
-	Pipeline * pipe = new Pipeline();
+	pipe = new Pipeline();
 	pipe->setCamera(m_windowWidth, m_windowHeight);
 	pipe->init();
 	m_pEffect = new LightingTechnique();
@@ -108,4 +111,4 @@ void Game::mouseButtonWrapper(int button, int action)
 void Game::mousePosWrapper(int x, int y)
 {
 	cam->onMousePos(x, y);
- }
+}
