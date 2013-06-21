@@ -1,7 +1,7 @@
 #ifndef Texture_h
 #define Texture_h
 
-#include "../shader_manager/Shader.h"
+#include "../shader/Shader.h"
 
 // class for creating texture opengl textures
 class Texture

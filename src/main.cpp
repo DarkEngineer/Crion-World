@@ -13,6 +13,7 @@
 int main()
 {
 	Game * application = new Game();
+	game = application;
 	application->createWindow(800, 600);
 	GLenum res = glewInit();
 	if( res != GLEW_OK)
@@ -25,9 +26,8 @@ int main()
 
 	glfwEnable(GLFW_KEY_REPEAT);
 
-	glfwSetMouseButtonCallback(Game::mouseButtonWrapper);
-	glfwSetKeyCallback(Game::keyboardWrapper);
-	glEnable(GL_CULL_FACE);
+   	glEnable(GL_CULL_FACE);
+
 	while(glfwGetWindowParam(GLFW_OPENED) && !(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) )
 	{
 		application->render();

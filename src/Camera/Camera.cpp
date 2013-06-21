@@ -1,12 +1,5 @@
 #include "Camera.h"
 
-const static float STEP_SCALE = 0.1f;
-const static int MARGIN = 10;
-
-glm::vec3 cPos(1.0f, 1.0f, 1.0f);
-glm::vec3 cTarget(0.0f, 0.0f, -3.5f);
-glm::vec3 cUp(0.0f, 1.0f, 0.0f);
-
 Camera *cam;
 
 Camera::Camera()
@@ -30,17 +23,15 @@ Camera::Camera(int windowWidth, int windowHeight)
 {
     m_windowWidth  = windowWidth;
     m_windowHeight = windowHeight;
-    m_pos          = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_pos          = glm::vec3(6.0f, 5.0f, 0.0f);
     m_target       = glm::vec3(0.0f, 0.0f, -10.0f);
 	glm::normalize(m_target);
     m_up           = glm::vec3(0.0f, 1.0f, 0.0f);
-	mouseSpeed = 100.0f;
+	mouseSpeed = 1.0f;
 	m_AngleH = 3.14f;
 	m_AngleV = 0.0f;
 	deltaTime = 0.0f;
 	lastTime = 0.0f;
-	m_mousePosState = MOUSE_RIGHT_BUTTON_RELEASE;
-
     Init();
 }
 Camera::Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const glm::vec3 & Target, const glm::vec3 &Up )
@@ -53,14 +44,11 @@ Camera::Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const gl
 	m_target = glm::normalize(m_target);
 	m_up = Up;
 	m_up = glm::normalize(m_up);
-	mouseSpeed = 100.0f;
+	mouseSpeed = 1.0f;
 	m_AngleH = 3.14f;
 	m_AngleV = 0.0f;
 	deltaTime = 0.0f;
 	lastTime = 0.0f;
-	m_mouseCursorLastPos = glm::ivec2(0, 0);
-	m_mousePosState = MOUSE_RIGHT_BUTTON_RELEASE;
-
 	Init();
 }
 
@@ -108,14 +96,15 @@ void Camera::onMouseButton(int button, int action)
 
 void Camera::onMousePos(int x, int y )
 {
-	m_mouseCursorLastPos = glm::ivec2(x, y);
-
+	
 	if(m_mousePosState == MOUSE_RIGHT_BUTTON_PRESS)
 	{
 		glfwDisable(GLFW_MOUSE_CURSOR);
 		glfwSetMousePos(m_windowWidth/2, m_windowHeight/2);
 		m_AngleH += mouseSpeed * deltaTime * static_cast<float>((m_windowWidth/2 - x));
+		std::cout << m_AngleH << std::endl;
 		m_AngleV += mouseSpeed * deltaTime * static_cast<float>((m_windowHeight/2 - y));
+		std::cout << m_AngleV << std::endl;
 		if(m_AngleV > 90.0f)
 			m_AngleV = 90.0f;
 		if(m_AngleV < -90.0f)
@@ -126,6 +115,8 @@ void Camera::onMousePos(int x, int y )
 		m_up = glm::cross(right, direction);
 		bMouseLastPos = false;
 	}
+	
+		m_mouseCursorLastPos = glm::ivec2(x, y);
 
 	if(m_mousePosState == MOUSE_RIGHT_BUTTON_RELEASE && bMouseLastPos == false)
 	{
@@ -172,12 +163,12 @@ bool Camera::onKeyboard( int Key, int action)
 			} break;
 		case GLFW_KEY_LEFT:
 			{
-				m_pos += glm::cross(m_pos + m_target, m_up) * deltaTime * mouseSpeed;
+				m_pos += glm::cross(m_target, m_up) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		case GLFW_KEY_RIGHT:
 			{
-				m_pos += glm::cross(m_up, m_pos + m_target) * deltaTime * mouseSpeed;
+				m_pos += glm::cross(m_up, m_target) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		case 'q':
@@ -191,6 +182,8 @@ bool Camera::onKeyboard( int Key, int action)
 				Ret = true;
 			} break;
 		}
+
+	std::cout << m_pos.x << " " << m_pos.y << " " << m_pos.z << std::endl;
 	return Ret;
 }
 

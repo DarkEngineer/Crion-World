@@ -35,11 +35,13 @@ bool LightingTechnique::init()
 
 void LightingTechnique::setWVP(const glm::mat4 & WVP)
 {
-	glUniformMatrix4fv(m_WVPLocation, 1, GL_TRUE, glm::value_ptr(WVP));
+	glUniformMatrix4fv(m_WVPLocation, 1, GL_FALSE, glm::value_ptr(WVP));
 }
 
 void LightingTechnique::setDirectionalLight(const DirectionalLight & Light)
 {
 	glUniform3f(m_dirLightColorLocation, Light.color.x, Light.color.y, Light.color.z);
+	//std::cout << "Light: " << Light.color.x << " " << Light.color.y << " " << Light.color.z << std::endl;
 	glUniform1f(m_dirLightAmbientIntensityLocation, Light.ambientIntensity);
+	//std::cout << "Ambient Intensity: " << Light.ambientIntensity << std::endl;
 }

@@ -67,6 +67,9 @@ void Pipeline::init()
 void Pipeline::setCamera(const glm::vec3 & pos, const glm::vec3 & target, const glm::vec3 & up) 
 {
 	m_camera = new Camera(static_cast<int>(m_persProj.width), static_cast<int>(m_persProj.height), pos, target, up);
+	//std::cout << "Pos: " << getCamera()->GetPos().x << " " << getCamera()->GetPos().y << " " << getCamera()->GetPos().z << std::endl;
+	//std::cout << "Target: " << getCamera()->GetTarget().x << getCamera()->GetTarget().y << " " << getCamera()->GetTarget().z << std::endl;
+	//std::cout << "Up: " << getCamera()->GetUp().x << " " << getCamera()->GetUp().y << " " << getCamera()->GetUp().z << std::endl;
 }
 
 void Pipeline::setCamera(const int & windowWidth, const int & windowHeight)

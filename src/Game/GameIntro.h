@@ -1,8 +1,8 @@
 #ifndef GameIntro_h
 #define GameIntro_h
 #include "game.h"
-#include "LightingTechnique.h"
-#include "Mesh.h"
+#include "../Lighting/LightingTechnique.h"
+#include "../Mesh/Mesh.h"
 
 
 class GameIntro : public Game

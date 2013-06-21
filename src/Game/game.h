@@ -1,16 +1,15 @@
 #ifndef Game_h
 #define Game_h
 #include "../Lighting/LightingTechnique.h"
-#include "../Camera/Camera.h"
 #include "../Mesh/Mesh.h"
 #include "../Pipeline/Pipeline.h"
-#include <GL/glfw.h>
 #include <string>
 
 class Game
 {
 	LightingTechnique * m_pEffect;
 	Pipeline * pipe;
+	Camera * gameCamera;
 	float m_scale;
 	DirectionalLight m_directionalLight;
 	Mesh * mesh;
@@ -23,11 +22,14 @@ class Game
 
 public:
 	Game();
-	~Game();
+	virtual ~Game();
 
 	void createWindow(int windowWidth, int windowHeight);
 
 	bool init();
+	bool initLight();
+	bool initModels();
+	bool initCallbacks();
 	virtual void render();
 	Mesh * getMesh();
 

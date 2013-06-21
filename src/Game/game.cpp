@@ -44,6 +44,7 @@ bool Game::init()
 	pipe = new Pipeline();
 	pipe->setCamera(m_windowWidth, m_windowHeight);
 	pipe->init();
+	gameCamera = pipe->getCamera();
 	m_pEffect = new LightingTechnique();
 
 	if(!m_pEffect->init())
@@ -55,7 +56,13 @@ bool Game::init()
 		mesh->loadMesh("models/studnia.3ds");
 	else
 		return false;
-	std::cout << "Texture: " << * getMesh()->getTexturePath() << std::endl;
+
+
+	cam = gameCamera;
+	glfwSetMouseButtonCallback(Game::mouseButtonWrapper);
+	glfwSetCharCallback(Game::keyboardWrapper);
+	glfwSetMousePosCallback(Game::mousePosWrapper);
+	glfwSetKeyCallback(Game::keyboardWrapper);
 
 	return true;
 }
@@ -63,15 +70,11 @@ bool Game::init()
 void Game::render()
 {
 	pipe->render();
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_scale += sinf(0.1f * static_cast<float>(M_PI));
-
-	pipe->rotate(0.0f, m_scale, 0.0f);
-	pipe->worldPos(0.0f, 0.0f, 3.0f);
-	pipe->setPerspectiveProj(60.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
-	pipe->setCamera(pipe->getCamera()->GetPos(), pipe->getCamera()->GetTarget(), pipe->getCamera()->GetUp());
+	pipe->rotate(0.0f, 0.0f, 0.0f);
+	pipe->setCamera(gameCamera->GetPos(), gameCamera->GetTarget(), gameCamera->GetUp());
+	pipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
 	m_pEffect->setWVP(* pipe->getTrans());
 	m_pEffect->setDirectionalLight(m_directionalLight);
 	mesh->render();

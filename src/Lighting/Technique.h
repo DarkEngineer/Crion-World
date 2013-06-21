@@ -1,8 +1,6 @@
 #ifndef Technique_h
 #define Technique_h
-#include <GL/glew.h>
-#include <GL\glfw.h>
-#include "../shader_manager/Shader.h"
+#include "../shader/Shader.h"
 #include <list>
 class Technique
 {
