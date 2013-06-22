@@ -8,6 +8,8 @@ Game::Game()
 	m_scale = 1.0f;
 	m_directionalLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	m_directionalLight.ambientIntensity = 0.5f;
+    m_directionalLight.diffuseIntensity = 0.75f;
+    m_directionalLight.direction = glm::vec3(1.0f, 0.0, 0.0);
 	m_windowWidth = 800;
 	m_windowHeight = 600;
 }
@@ -72,9 +74,9 @@ void Game::render()
 	pipe->render();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	pipe->rotate(0.0f, 0.0f, 0.0f);
 	pipe->setCamera(gameCamera->GetPos(), gameCamera->GetTarget(), gameCamera->GetUp());
 	pipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
+	m_pEffect->setWorldMatrix(* pipe->getWorldTrans());
 	m_pEffect->setWVP(* pipe->getTrans());
 	m_pEffect->setDirectionalLight(m_directionalLight);
 	mesh->render();
@@ -90,13 +92,22 @@ void Game::onKeyboard(int key, int action)
 {
 	switch(key)
 	{
-	case 'g':
+	case 'a':
 		m_directionalLight.ambientIntensity += 0.05f;
 		break;
-	case 'h':
+	case 's':
 		m_directionalLight.ambientIntensity -= 0.05f;
 		break;
+	case 'z':
+		m_directionalLight.diffuseIntensity += 0.05f;
+		break;
+	case 'x':
+		m_directionalLight.diffuseIntensity -= 0.05f;
+		break;
 	}
+
+	if(m_directionalLight.ambientIntensity < 0.0f)
+		m_directionalLight.ambientIntensity = 0.0f;
 }
 
 void Game::keyboardWrapper(int key, int action)

@@ -48,15 +48,15 @@ class Camera
 
 	enum
 	{
-		MOUSE_RIGHT_BUTTON_RELEASE,
-		MOUSE_RIGHT_BUTTON_PRESS
-	} m_mousePosState; 	//enum used for set button states
+		RELEASE,
+		PRESS
+	} rmb_state; 	//enum used for set button states
 
 	struct
 	{
-		glm::ivec2 m_mouseCursorLastPos; 	// mouse last position before set mouse coordinations to screen center
-		glm::ivec2 m_mouseCursorCurrentPos; // mouse current position
-		bool bMouseLastPos;
+		glm::ivec2 lastPos; 	// mouse last position before set mouse coordinations to screen center
+		glm::ivec2 currentPos; // mouse current position
+		bool updatePos;
 		float mouseSpeed;
 	};
 public:

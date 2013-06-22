@@ -84,20 +84,20 @@ const glm::mat4 & Camera::GetLookAt() const
 
 void Camera::onMouseButton(int button, int action)
 {
-	if(button == GLFW_MOUSE_BUTTON_RIGHT)
-	{
-		if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-			m_mousePosState = MOUSE_RIGHT_BUTTON_PRESS;
-	}
+
+	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+		rmb_state = PRESS;
 	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
-		m_mousePosState = MOUSE_RIGHT_BUTTON_RELEASE;
+		rmb_state = RELEASE;
 
 }
 
 void Camera::onMousePos(int x, int y )
 {
-	
-	if(m_mousePosState == MOUSE_RIGHT_BUTTON_PRESS)
+	if(rmb_state == RELEASE)
+		lastPos = glm::ivec2(x, y);
+
+	if(rmb_state == PRESS)
 	{
 		glfwDisable(GLFW_MOUSE_CURSOR);
 		glfwSetMousePos(m_windowWidth/2, m_windowHeight/2);
@@ -113,16 +113,15 @@ void Camera::onMousePos(int x, int y )
 		m_target = direction;
 		glm::vec3 right(sin(m_AngleH - 3.14f/2.0f), 0, cos(m_AngleH - 3.14f/2.0f));
 		m_up = glm::cross(right, direction);
-		bMouseLastPos = false;
+		updatePos = false;
 	}
 	
-		m_mouseCursorLastPos = glm::ivec2(x, y);
 
-	if(m_mousePosState == MOUSE_RIGHT_BUTTON_RELEASE && bMouseLastPos == false)
+	if(rmb_state == RELEASE && updatePos == false)
 	{
-		bMouseLastPos = true;
+		updatePos = true;
 		glfwEnable(GLFW_MOUSE_CURSOR);
-		glfwSetMousePos(m_mouseCursorLastPos.x, m_mouseCursorLastPos.y);
+		glfwSetMousePos(lastPos.x, lastPos.y);
 	}  
 
 	Update();
@@ -153,22 +152,22 @@ bool Camera::onKeyboard( int Key, int action)
 		{
 		case GLFW_KEY_UP:
 			{
-				m_pos += (m_target) * deltaTime * (10 * mouseSpeed);
+				m_pos += (m_target) * deltaTime  * mouseSpeed;
 				Ret = true;
 			} break;
 		case GLFW_KEY_DOWN:
 			{
-				m_pos -= (m_target) * deltaTime * (10 * mouseSpeed);
+				m_pos -= (m_target) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		case GLFW_KEY_LEFT:
 			{
-				m_pos += glm::cross(m_target, m_up) * deltaTime * mouseSpeed;
+				m_pos += glm::cross(m_up, m_target) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		case GLFW_KEY_RIGHT:
 			{
-				m_pos += glm::cross(m_up, m_target) * deltaTime * mouseSpeed;
+				m_pos += glm::cross(m_target, m_up) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
 		case 'q':
@@ -183,7 +182,6 @@ bool Camera::onKeyboard( int Key, int action)
 			} break;
 		}
 
-	std::cout << m_pos.x << " " << m_pos.y << " " << m_pos.z << std::endl;
 	return Ret;
 }
 
@@ -238,9 +236,9 @@ Camera::~Camera()
     delete & m_OnRightEdge;
 
 	delete & m_mousePos;
-	delete & m_mousePosState;
-	delete & m_mouseCursorCurrentPos;
-	delete & m_mouseCursorLastPos;
-	delete & bMouseLastPos;
+	delete & rmb_state;
+	delete & currentPos;
+	delete & lastPos;
+	delete & updatePos;
 	delete & mouseSpeed;
 }

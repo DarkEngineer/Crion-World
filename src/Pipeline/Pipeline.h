@@ -17,12 +17,20 @@ class Pipeline
 		float zFar;
 	} m_persProj;
 
+	//struct
+	//{
+	//	glm::vec3 pos;
+	//	glm::vec3 target;
+	//	glm::vec3 up;
+	//} m_camera;
+
 	Camera * m_camera;
 
 	glm::vec3 m_scale;
 	glm::vec3 m_worldPos;
 	glm::vec3 m_rotateInfo;
-	glm::mat4 m_transformation;
+	glm::mat4 m_wvpmatrix;
+	glm::mat4 m_worldMatrix;
 	
 
 	void initScaleTransform(glm::mat4 & m) const;
@@ -46,8 +54,8 @@ public:
 	virtual void init();
 	virtual void render();
 
-	
 	const glm::mat4 * getTrans();
+	const glm::mat4 * getWorldTrans();
 	virtual ~Pipeline();
 };
 

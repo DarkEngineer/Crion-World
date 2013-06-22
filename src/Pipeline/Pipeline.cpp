@@ -21,7 +21,7 @@ Pipeline::~Pipeline()
 	delete & m_scale;
 	delete & m_worldPos;
 	delete & m_rotateInfo;
-	delete & m_transformation;
+	delete & m_wvpmatrix;
 }
 
 Camera * Pipeline::getCamera()
@@ -147,17 +147,27 @@ void Pipeline::initCameraTransform(const glm::vec3 & pos, const glm::vec3 & targ
 	m = glm::lookAt(pos, target, up);
 }
 
-const glm::mat4 * Pipeline::getTrans()
+const glm::mat4 * Pipeline::getWorldTrans()
 {
-	glm::mat4 scaleTrans, rotateTrans, translationTrans, perspectiveProjTrans, cameraTrans;
-
+	glm::mat4 scaleTrans, rotateTrans, translationTrans;
 	initScaleTransform(scaleTrans);
 	initRotateTransform(rotateTrans);
 	initTranslateTransform(translationTrans);
+
+	m_worldMatrix = translationTrans * rotateTrans * scaleTrans;
+
+	return & m_worldMatrix;
+}
+
+const glm::mat4 * Pipeline::getTrans()
+{
+	getWorldTrans();
+	glm::mat4 perspectiveProjTrans, cameraTrans;
+
 	initCameraTransform(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget(), m_camera->GetUp(), cameraTrans);
 	initPerspectiveProj(perspectiveProjTrans);
 
-	m_transformation = perspectiveProjTrans * cameraTrans * translationTrans * rotateTrans * scaleTrans;
+	m_wvpmatrix = perspectiveProjTrans * cameraTrans * m_worldMatrix;
 
-	return & m_transformation;
+	return & m_wvpmatrix;
 }
