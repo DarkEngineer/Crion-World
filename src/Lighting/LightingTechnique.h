@@ -16,6 +16,9 @@ class LightingTechnique : public Technique
 	GLuint m_WVPLocation;
 	GLuint m_worldMatrixLocation;
 	GLuint m_samplerLocation;
+	GLuint m_eyeWorldLocation;
+	GLuint m_matSpecularIntensityLocation;
+	GLuint m_matSpecularPowerLocation;
 	struct
 	{
 		GLuint color;
@@ -33,5 +36,8 @@ public:
 	void setWorldMatrix(const glm::mat4 & world);
 	void setTextureUnit(unsigned int textureUnit);
 	void setDirectionalLight(const DirectionalLight & light);
+	void setEyeWorldPos(const glm::vec3 & pos);
+	void setSpecularIntensity(float intensity);
+	void setSpecularPower(float power);
 };
 #endif

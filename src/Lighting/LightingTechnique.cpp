@@ -29,8 +29,13 @@ bool LightingTechnique::init()
 	m_dirLightLocation.ambientIntensity = getUniformLocation("gDirectionalLight.ambientIntensity");	
 	m_dirLightLocation.diffuseIntensity = getUniformLocation("gDirectionalLight.diffuseIntensity");
 	m_dirLightLocation.direction = getUniformLocation("gDirectionalLight.direction");
+	m_eyeWorldLocation = getUniformLocation("gEyeWorldPos");
+	m_matSpecularIntensityLocation = getUniformLocation("gMatSpecularIntensity");
+	m_matSpecularPowerLocation = getUniformLocation("gSpecularPower");
 
-	if(m_WVPLocation == -1 || m_worldMatrixLocation == -1 || m_samplerLocation == -1 || m_dirLightLocation.color == -1 || m_dirLightLocation.ambientIntensity == -1 || m_dirLightLocation.diffuseIntensity == -1 || m_dirLightLocation.direction == -1)
+	if(m_WVPLocation == -1 || m_worldMatrixLocation == -1 || m_samplerLocation == -1 || m_dirLightLocation.color == -1 || 
+		m_dirLightLocation.ambientIntensity == -1 || m_dirLightLocation.diffuseIntensity == -1 || m_dirLightLocation.direction == -1 ||
+		m_eyeWorldLocation == -1 || m_matSpecularIntensityLocation == -1 || m_matSpecularPowerLocation == -1)
 		return false;
 
 	return true;
@@ -54,4 +59,19 @@ void LightingTechnique::setDirectionalLight(const DirectionalLight & Light)
 	direction = glm::normalize(direction);
 	glUniform3f(m_dirLightLocation.direction, direction.x, direction.y, direction.z);
 	glUniform1f(m_dirLightLocation.diffuseIntensity, Light.diffuseIntensity);
+}
+
+void LightingTechnique::setEyeWorldPos(const glm::vec3 & pos)
+{
+	glUniform3f(m_eyeWorldLocation, pos.x, pos.y, pos.z);
+}
+
+void LightingTechnique::setSpecularIntensity(float intensity)
+{
+	glUniform1f(m_matSpecularIntensityLocation, intensity);
+}
+
+void LightingTechnique::setSpecularPower(float power)
+{
+	glUniform1f(m_matSpecularPowerLocation, power);
 }

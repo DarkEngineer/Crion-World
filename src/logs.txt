@@ -1,0 +1,4 @@
+Vertex shader failed to compile with the following errors:
+ERROR: 0:17: error(#132) Syntax error: "}" parse error
+ERROR: error(#273) 1 compilation errors.  No code generated
+

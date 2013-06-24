@@ -79,6 +79,9 @@ void Game::render()
 	m_pEffect->setWorldMatrix(* pipe->getWorldTrans());
 	m_pEffect->setWVP(* pipe->getTrans());
 	m_pEffect->setDirectionalLight(m_directionalLight);
+	m_pEffect->setEyeWorldPos(gameCamera->GetPos());
+	m_pEffect->setSpecularIntensity(1.0f);
+	m_pEffect->setSpecularPower(32);
 	mesh->render();
 	glfwSwapBuffers();
 }

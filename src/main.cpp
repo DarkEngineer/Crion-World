@@ -26,8 +26,6 @@ int main()
 
 	glfwEnable(GLFW_KEY_REPEAT);
 
-   	glEnable(GL_CULL_FACE);
-
 	while(glfwGetWindowParam(GLFW_OPENED) && !(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) )
 	{
 		application->render();
