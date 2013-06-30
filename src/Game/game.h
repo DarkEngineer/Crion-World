@@ -7,11 +7,13 @@
 
 class Game
 {
+	static const int fieldDepth = 1;
 	LightingTechnique * m_pEffect;
 	Pipeline * pipe;
 	Camera * gameCamera;
 	float m_scale;
 	DirectionalLight m_directionalLight;
+	PointLight * pointLight;
 	Mesh * mesh;
 	struct
 	{

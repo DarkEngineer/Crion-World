@@ -9,7 +9,7 @@ Game::Game()
 	m_directionalLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	m_directionalLight.ambientIntensity = 0.5f;
     m_directionalLight.diffuseIntensity = 0.75f;
-    m_directionalLight.direction = glm::vec3(1.0f, 0.0, 0.0);
+    m_directionalLight.direction = glm::vec3(1.0f, -1.0, 0.0);
 	m_windowWidth = 800;
 	m_windowHeight = 600;
 }
@@ -19,6 +19,7 @@ Game::~Game()
 	delete pipe;
 	delete m_pEffect;
 	delete mesh;
+	delete pointLight;
 	delete & m_scale;
 	delete & m_directionalLight;
 	delete & m_windowWidth;
@@ -71,9 +72,20 @@ bool Game::init()
 
 void Game::render()
 {
+	m_scale += 0.0057f;
 	pipe->render();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	PointLight pointLight[2];
+	pointLight[0].diffuseIntensity = 0.5f;
+	pointLight[0].color = glm::vec3(1.0f, 0.5f, 0.0f);
+	pointLight[0].position = glm::vec3(0.0f, 2.0f, 0.0f);
+	pointLight[0].attentuation.linear = 0.1f;
+	pointLight[1].diffuseIntensity = 0.5f;
+	pointLight[1].color = glm::vec3(0.0f, 0.5f, 1.0f);
+	pointLight[1].position = glm::vec3(2.0f, 2.0f, 0.0f);
+	pointLight[1].attentuation.linear = 0.1f;
+	m_pEffect->setPointLights(2, pointLight);
 	pipe->setCamera(gameCamera->GetPos(), gameCamera->GetTarget(), gameCamera->GetUp());
 	pipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
 	m_pEffect->setWorldMatrix(* pipe->getWorldTrans());

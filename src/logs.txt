@@ -1,4 +1,6 @@
-Vertex shader failed to compile with the following errors:
-ERROR: 0:17: error(#132) Syntax error: "}" parse error
+Fragment shader failed to compile with the following errors:
+ERROR: 0:90: error(#160) Cannot convert from: "3-component vector of vec3" to: "highp 4-component vector of vec4"
+WARNING: 0:91: warning(#402) Implicit truncation of vector from size: 4 to size: 3
+WARNING: 0:95: warning(#402) Implicit truncation of vector from size: 4 to size: 3
 ERROR: error(#273) 1 compilation errors.  No code generated
 

@@ -1,5 +1,10 @@
 #include "LightingTechnique.h" 
 
+DirectionalLight::DirectionalLight()
+{
+	direction = glm::vec3(0.0f, 0.0f, 0.0f);
+}
+
 LightingTechnique::LightingTechnique()
 {
 }
@@ -7,6 +12,22 @@ LightingTechnique::LightingTechnique()
 LightingTechnique::~LightingTechnique()
 {
 }
+
+BaseLight::BaseLight()
+{
+	color = glm::vec3(0.0f, 0.0f, 0.0f);
+	ambientIntensity = 0.0f;
+	diffuseIntensity = 0.0f;
+}
+
+PointLight::PointLight()
+{
+	position = glm::vec3(0.0f, 0.0, 0.0f);
+	attentuation.constant = 1.0f;
+	attentuation.linear = 0.0f;
+	attentuation.exp = 0.0f;
+}
+
 bool LightingTechnique::init()
 {
 	if(!Technique::init())
@@ -25,13 +46,31 @@ bool LightingTechnique::init()
 	m_WVPLocation = getUniformLocation("gWVP");
 	m_worldMatrixLocation = getUniformLocation("gWorld");
 	m_samplerLocation = getUniformLocation("gSampler");
-	m_dirLightLocation.color = getUniformLocation("gDirectionalLight.color");
-	m_dirLightLocation.ambientIntensity = getUniformLocation("gDirectionalLight.ambientIntensity");	
-	m_dirLightLocation.diffuseIntensity = getUniformLocation("gDirectionalLight.diffuseIntensity");
-	m_dirLightLocation.direction = getUniformLocation("gDirectionalLight.direction");
-	m_eyeWorldLocation = getUniformLocation("gEyeWorldPos");
-	m_matSpecularIntensityLocation = getUniformLocation("gMatSpecularIntensity");
-	m_matSpecularPowerLocation = getUniformLocation("gSpecularPower");
+	loadLightLocation();
+	loadSpecularEffectLocation();
+
+	//for (unsigned int i = 0 ; i < sizeof(m_pointLightsLocation)/sizeof(m_pointLightsLocation[0]) ; i++) {
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Base.Color", i);
+ //       m_pointLightsLocation[i].Color = GetUniformLocation(Name);
+
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Base.AmbientIntensity", i);
+ //       m_pointLightsLocation[i].AmbientIntensity = GetUniformLocation(Name);
+
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Position", i);
+ //       m_pointLightsLocation[i].Position = GetUniformLocation(Name);
+
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Base.DiffuseIntensity", i);
+ //       m_pointLightsLocation[i].DiffuseIntensity = GetUniformLocation(Name);
+
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Atten.Constant", i);
+ //       m_pointLightsLocation[i].Atten.Constant = GetUniformLocation(Name);
+
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Atten.Linear", i);
+ //       m_pointLightsLocation[i].Atten.Linear = GetUniformLocation(Name);
+
+ //       SNPRINTF(Name, sizeof(Name), "gPointLights[%d].Atten.Exp", i);
+ //       m_pointLightsLocation[i].Atten.Exp = GetUniformLocation(Name);
+
 
 	if(m_WVPLocation == -1 || m_worldMatrixLocation == -1 || m_samplerLocation == -1 || m_dirLightLocation.color == -1 || 
 		m_dirLightLocation.ambientIntensity == -1 || m_dirLightLocation.diffuseIntensity == -1 || m_dirLightLocation.direction == -1 ||
@@ -74,4 +113,36 @@ void LightingTechnique::setSpecularIntensity(float intensity)
 void LightingTechnique::setSpecularPower(float power)
 {
 	glUniform1f(m_matSpecularPowerLocation, power);
+}
+
+void LightingTechnique::loadLightLocation()
+{
+	m_dirLightLocation.color = getUniformLocation("gDirectionalLight.base.color");
+	m_dirLightLocation.ambientIntensity = getUniformLocation("gDirectionalLight.base.ambientIntensity");	
+	m_dirLightLocation.diffuseIntensity = getUniformLocation("gDirectionalLight.base.diffuseIntensity");
+	m_dirLightLocation.direction = getUniformLocation("gDirectionalLight.direction");
+}
+
+void LightingTechnique::loadSpecularEffectLocation()
+{
+	m_eyeWorldLocation = getUniformLocation("gEyeWorldPos");
+	m_matSpecularIntensityLocation = getUniformLocation("gMatSpecularIntensity");
+	m_matSpecularPowerLocation = getUniformLocation("gSpecularPower");
+
+}
+
+void LightingTechnique::setPointLights(unsigned int lightsNumber, const PointLight * light)
+{
+	glUniform1i(m_numPointLightsLocation, lightsNumber);
+
+	for(int i = 0; i < lightsNumber; i++)
+	{
+		glUniform3f(m_pointLightsLocation[i].color, light[i].color.x, light[i].color.y, light[i].color.z);
+		glUniform1f(m_pointLightsLocation[i].ambientIntensity, light[i].ambientIntensity);
+		glUniform1f(m_pointLightsLocation[i].diffuseIntensity, light[i].diffuseIntensity);
+		glUniform3f(m_pointLightsLocation[i].position, light[i].position.x, light[i].position.y, light[i].position.z);
+		glUniform1f(m_pointLightsLocation[i].attentuation.constant, light[i].attentuation.constant);
+		glUniform1f(m_pointLightsLocation[i].attentuation.linear, light[i].attentuation.linear);
+		glUniform1f(m_pointLightsLocation[i].attentuation.exp, light[i].attentuation.exp);
+	}
 }
