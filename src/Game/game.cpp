@@ -9,7 +9,7 @@ Game::Game()
 	m_directionalLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	m_directionalLight.ambientIntensity = 0.5f;
     m_directionalLight.diffuseIntensity = 0.75f;
-    m_directionalLight.direction = glm::vec3(1.0f, -1.0, 0.0);
+    m_directionalLight.direction = glm::vec3(0.0, -1.0, 0.0);
 	m_windowWidth = 800;
 	m_windowHeight = 600;
 }
@@ -76,26 +76,53 @@ void Game::render()
 	pipe->render();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	PointLight pointLight[2];
-	pointLight[0].diffuseIntensity = 0.5f;
-	pointLight[0].color = glm::vec3(1.0f, 0.5f, 0.0f);
-	pointLight[0].position = glm::vec3(0.0f, 2.0f, 0.0f);
-	pointLight[0].attentuation.linear = 0.1f;
-	pointLight[1].diffuseIntensity = 0.5f;
-	pointLight[1].color = glm::vec3(0.0f, 0.5f, 1.0f);
-	pointLight[1].position = glm::vec3(2.0f, 2.0f, 0.0f);
-	pointLight[1].attentuation.linear = 0.1f;
-	m_pEffect->setPointLights(2, pointLight);
+	renderPointLights();
+	renderSpotLights();
 	pipe->setCamera(gameCamera->GetPos(), gameCamera->GetTarget(), gameCamera->GetUp());
 	pipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
 	m_pEffect->setWorldMatrix(* pipe->getWorldTrans());
+	m_pEffect->setNormalMatrix(glm::transpose(glm::inverse(glm::mat3((*pipe->getWorldTrans())))));
 	m_pEffect->setWVP(* pipe->getTrans());
-	m_pEffect->setDirectionalLight(m_directionalLight);
 	m_pEffect->setEyeWorldPos(gameCamera->GetPos());
+	m_pEffect->setDirectionalLight(m_directionalLight);
 	m_pEffect->setSpecularIntensity(1.0f);
 	m_pEffect->setSpecularPower(32);
 	mesh->render();
 	glfwSwapBuffers();
+}
+
+void Game::renderPointLights()
+{
+	PointLight pointLight[2];
+	pointLight[0].diffuseIntensity = 1.0f;
+	pointLight[0].color = glm::vec3(0.25f, 0.5f, 0.0f);
+	pointLight[0].position = glm::vec3(6.0f * ((cosf(m_scale) + 3.0f) / 2.0f), 2.0f, (cosf(m_scale) + 1.0f) / 2.0f);
+	pointLight[0].attentuation.linear = 0.1f;
+	pointLight[1].diffuseIntensity = 1.0f;
+	pointLight[1].color = glm::vec3(0.0f, 0.5f, 0.25f);
+	pointLight[1].position = glm::vec3(2.0f, 7.0f, (sinf(m_scale) + 1.0f) / 2.0f);
+	pointLight[1].attentuation.linear = 0.1f;
+	m_pEffect->setPointLights(2, pointLight);
+
+}
+
+void Game::renderSpotLights()
+{
+	SpotLight spotLight[2];
+	spotLight[0].diffuseIntensity = 0.9f;
+	spotLight[0].color = glm::vec3(1.0f, 1.0f, 1.0f);
+	spotLight[0].position = gameCamera->GetPos();
+	spotLight[0].direction = gameCamera->GetTarget();
+	spotLight[0].attentuation.linear = 0.5f;
+	spotLight[0].cutoff = 5.0f;
+	spotLight[1].diffuseIntensity = 1.0f;
+	spotLight[1].color = glm::vec3(0.5f, 1.0f, 0.5f);
+	spotLight[1].position = glm::vec3(6.0f, 5.0f, 2.0f);
+	spotLight[1].direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	spotLight[1].attentuation.exp = 0.6f;
+	spotLight[1].cutoff = 5.0f;
+	m_pEffect->setSpotLights(2, spotLight);
+
 }
 
 Mesh * Game::getMesh()

@@ -2,6 +2,7 @@
 #define Camera_h
 #include <GL\glew.h>
 #include <GL\glfw.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <glm\glm.hpp>
 #include <iostream>
@@ -10,9 +11,6 @@
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\gtx\quaternion.hpp>
 
-#define M_PI 3.14159265358979323846
-#define toRadian(x) ((x) * M_PI / 180.0f)
-#define toDegree(x) ((x) * 180.0f / M_PI)
 
 
 

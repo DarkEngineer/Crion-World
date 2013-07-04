@@ -7,7 +7,6 @@
 
 class Game
 {
-	static const int fieldDepth = 1;
 	LightingTechnique * m_pEffect;
 	Pipeline * pipe;
 	Camera * gameCamera;
@@ -21,6 +20,8 @@ class Game
 		int m_windowHeight;
 	};
 	
+	void renderPointLights();
+	void renderSpotLights();
 
 public:
 	Game();

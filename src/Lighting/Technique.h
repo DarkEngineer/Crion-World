@@ -15,6 +15,7 @@ protected:
 	bool addShader(const char* filename, Shader::ShaderType type);
 	bool finalize();
 	GLint getUniformLocation(const char* uniformName);
+	GLint getUniformLocation(const std::string uniformName);
 	GLuint getShaderProg();
 
 public:

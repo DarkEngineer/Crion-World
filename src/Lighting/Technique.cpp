@@ -79,6 +79,17 @@ GLint Technique::getUniformLocation(const char* uniformName)
 	return location;
 }
 
+GLint Technique::getUniformLocation(const std::string uniformName)
+{
+	const char * charUniformName = uniformName.c_str();
+	GLint location = glGetUniformLocation(m_shaderProg, charUniformName );
+
+	if(location == -1)
+		std::cout << "Wrong uniform location: " << uniformName << std::endl;
+
+	return location;
+};
+
 GLuint Technique::getShaderProg()
 {
 	return m_shaderProg;
