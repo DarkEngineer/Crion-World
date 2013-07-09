@@ -3,16 +3,21 @@
 #include "../Lighting/LightingTechnique.h"
 #include "../Mesh/Mesh.h"
 #include "../Pipeline/Pipeline.h"
+#include "../FBOShadow/FrameBufferShadowMap.h"
+#include "../ShadowMapTechnique/ShadowMapTechnique.h"
 #include <string>
 
 class Game
 {
-	LightingTechnique * m_pEffect;
+	LightingTechnique * m_pLightingEffect;
+	ShadowMapTechnique * m_pShadowMapEffect;
+	ShadowMap * m_shadowMap;
 	Pipeline * pipe;
 	Camera * gameCamera;
 	float m_scale;
 	DirectionalLight m_directionalLight;
 	PointLight * pointLight;
+	SpotLight * spotLight;
 	Mesh * mesh;
 	struct
 	{
@@ -33,6 +38,8 @@ public:
 	bool initLight();
 	bool initModels();
 	bool initCallbacks();
+	virtual void shadowMapPass();
+	virtual void renderPass();
 	virtual void render();
 	Mesh * getMesh();
 

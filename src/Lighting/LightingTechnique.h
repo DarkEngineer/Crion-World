@@ -59,6 +59,8 @@ class LightingTechnique : public Technique
 	GLuint m_matSpecularPowerLocation;
 	GLuint m_numPointLightsLocation;
 	GLuint m_numSpotLightsLocation;
+	GLuint m_shadowMapLocation;
+	GLuint m_lightMatrixLocation;
 	struct
 	{
 		GLuint color;
@@ -103,6 +105,7 @@ class LightingTechnique : public Technique
 	bool loadSpecularEffectLocation();
 	bool loadPointLightLocation();
 	bool loadSpotLightLocation();
+	bool loadShadowMapLocation();
 public:
 	LightingTechnique();
 	virtual ~LightingTechnique();
@@ -112,7 +115,9 @@ public:
 	void setWVP(const glm::mat4 & WVP);
 	void setWorldMatrix(const glm::mat4 & world);
 	void setNormalMatrix(const glm::mat3 & normalMatrix);
+	void setLightMatrix(const glm::mat4 & lightMatrix);
 	void setTextureUnit(unsigned int textureUnit);
+	void setShadowMapTextureUnit(unsigned int textureUnit);
 	void setDirectionalLight(const DirectionalLight & light);
 	void setPointLights(unsigned int lightsNumber, const PointLight* light);
 	void setSpotLights(unsigned int lightsNumber, const SpotLight * light);

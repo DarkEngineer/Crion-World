@@ -51,6 +51,7 @@ bool LightingTechnique::init()
 
 	m_WVPLocation = getUniformLocation("gWVP");
 	m_worldMatrixLocation = getUniformLocation("gWorld");
+	m_lightMatrixLocation = getUniformLocation("gLightMatrix");
 	m_normalMatrixLocation = getUniformLocation("gNormalMatrix");
 	m_samplerLocation = getUniformLocation("gSampler");
 	if(!loadLightLocation())
@@ -61,9 +62,12 @@ bool LightingTechnique::init()
 		return false;
 	if(!loadSpotLightLocation())
 		return false;
+	if(!loadShadowMapLocation())
+		return false;
 
 	if(m_WVPLocation == -1 || 
 		m_worldMatrixLocation == -1 || 
+		m_lightMatrixLocation == -1 ||
 		m_samplerLocation == -1 || 
 		m_normalMatrixLocation == -1)
 		return false;
@@ -76,6 +80,12 @@ void LightingTechnique::setWVP(const glm::mat4 & WVP)
 	glUniformMatrix4fv(m_WVPLocation, 1, GL_FALSE, glm::value_ptr(WVP));
 }
 
+
+void LightingTechnique::setLightMatrix(const glm::mat4 & lightMatrix)
+{
+	glUniformMatrix4fv(m_lightMatrixLocation, 1, GL_FALSE, glm::value_ptr(lightMatrix));
+}
+
 void LightingTechnique::setWorldMatrix(const glm::mat4 & world)
 {
 	glUniformMatrix4fv(m_worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(world));
@@ -84,6 +94,16 @@ void LightingTechnique::setWorldMatrix(const glm::mat4 & world)
 void LightingTechnique::setNormalMatrix(const glm::mat3 & normalMatrix)
 {
 	glUniformMatrix3fv(m_normalMatrixLocation, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+}
+
+void LightingTechnique::setTextureUnit(unsigned int textureUnit)
+{
+	glUniform1i(m_samplerLocation, textureUnit);
+}
+
+void LightingTechnique::setShadowMapTextureUnit(unsigned int textureUnit)
+{
+	glUniform1i(m_shadowMapLocation, textureUnit);
 }
 
 void LightingTechnique::setDirectionalLight(const DirectionalLight & Light)
@@ -175,6 +195,7 @@ bool LightingTechnique::loadPointLightLocation()
 
 	return true;
 }
+
 bool LightingTechnique::loadSpotLightLocation()
 {
 	m_numSpotLightsLocation = getUniformLocation("gNumSpotLights");
@@ -209,6 +230,16 @@ bool LightingTechnique::loadSpotLightLocation()
 	}
 
 	if(m_numSpotLightsLocation == -1)
+		return false;
+
+	return true;
+}
+
+bool LightingTechnique::loadShadowMapLocation()
+{
+	m_shadowMapLocation = getUniformLocation("gShadowMap");
+
+	if(m_shadowMapLocation == -1)
 		return false;
 
 	return true;
