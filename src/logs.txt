@@ -1,5 +1,4 @@
-Fragment shader failed to compile with the following errors:
-ERROR: 0:83: error(#202) No matching overloaded function found: calcLightInterval
-ERROR: 0:83: error(#247) Function return does not match type
-ERROR: error(#273) 2 compilation errors.  No code generated
+Vertex shader failed to compile with the following errors:
+ERROR: 0:19: error(#160) Cannot convert from: "highp 3-component vector of vec3" to: "Position 4-component vector of vec4"
+ERROR: error(#273) 1 compilation errors.  No code generated
 

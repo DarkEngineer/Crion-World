@@ -5,19 +5,24 @@ Camera *cam;
 Camera::Camera()
 {
 }
-void GLFWCALL Camera::keyWrapper(int key, int action)
+void Camera::keyboardWrapper(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	cam->onKeyboard(key, action);
+	cam->onKeyboard(window, key, action);
 }
 
-void GLFWCALL Camera::mouseButtonWrapper(int button, int action)
+void Camera::keyboardCharactersWrapper(GLFWwindow * window, unsigned int character)
 {
-	cam->onMouseButton(button, action);
+	cam->onKeyboardCharacters(window, character);
 }
 
-void GLFWCALL Camera::mousePosWrapper(int x, int y)
+void Camera::mouseButtonWrapper(GLFWwindow * window, int button, int action, int mods)
 {
-	cam->onMousePos(x, y);
+	cam->onMouseButton(window, button, action);
+}
+
+void Camera::mousePosWrapper(GLFWwindow* window, double x, double y)
+{
+	cam->onMousePos(window, static_cast<int>(floor(x)), static_cast<int>(floor(y)));
 }
 Camera::Camera(int windowWidth, int windowHeight)
 {
@@ -82,25 +87,25 @@ const glm::mat4 & Camera::GetLookAt() const
 	return lookAtMatrix;
 }
 
-void Camera::onMouseButton(int button, int action)
+void Camera::onMouseButton(GLFWwindow * window, int button, int action)
 {
 
-	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 		rmb_state = PRESS;
-	if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
+	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 		rmb_state = RELEASE;
 
 }
 
-void Camera::onMousePos(int x, int y )
+void Camera::onMousePos(GLFWwindow * window, int x, int y )
 {
 	if(rmb_state == RELEASE)
 		lastPos = glm::ivec2(x, y);
 
 	if(rmb_state == PRESS)
 	{
-		glfwDisable(GLFW_MOUSE_CURSOR);
-		glfwSetMousePos(m_windowWidth/2, m_windowHeight/2);
+		glfwSetCursorPos(window, m_windowWidth/2, m_windowHeight/2);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		m_AngleH += mouseSpeed * deltaTime * static_cast<float>((m_windowWidth/2 - x));
 		std::cout << m_AngleH << std::endl;
 		m_AngleV += mouseSpeed * deltaTime * static_cast<float>((m_windowHeight/2 - y));
@@ -120,8 +125,10 @@ void Camera::onMousePos(int x, int y )
 	if(rmb_state == RELEASE && updatePos == false)
 	{
 		updatePos = true;
-		glfwEnable(GLFW_MOUSE_CURSOR);
-		glfwSetMousePos(lastPos.x, lastPos.y);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetCursorPos(window, lastPos.x, lastPos.y);
+		//glfwEnable(GLFW_MOUSE_CURSOR); deprecated functions which need refactoring
+		//glfwSetMousePos(lastPos.x, lastPos.y);
 	}  
 
 	Update();
@@ -144,10 +151,10 @@ void Camera::onRender()
 	checkFPS();	
 	Update();
 }
-bool Camera::onKeyboard( int Key, int action)
+bool Camera::onKeyboard(GLFWwindow * window, int Key, int action)
 {
 	bool Ret = false;
-	if(action == GLFW_PRESS)
+	if(action == GLFW_PRESS || action == GLFW_REPEAT)
 		switch (Key)
 		{
 		case GLFW_KEY_UP:
@@ -170,17 +177,29 @@ bool Camera::onKeyboard( int Key, int action)
 				m_pos += glm::cross(m_target, m_up) * deltaTime * mouseSpeed;
 				Ret = true;
 			} break;
-		case 'q':
-			{
-				m_pos += glm::vec3(0, 1, 0) * deltaTime * mouseSpeed;
-				Ret = true;
-			} break;
-		case 'e':
-			{
-				m_pos += glm::vec3(0, -1, 0) * deltaTime * mouseSpeed;
-				Ret = true;
-			} break;
+
 		}
+
+	return Ret;
+}
+
+bool Camera::onKeyboardCharacters(GLFWwindow * window, unsigned int character)
+{
+	bool Ret = false;
+	if(glfwGetKey(window, character) == GLFW_PRESS || glfwGetKey(window, character) == GLFW_REPEAT)
+	switch(character)
+	{
+		case GLFW_KEY_Q:
+		{
+			m_pos += glm::vec3(0, 1, 0) * deltaTime * mouseSpeed;
+			Ret = true;
+		} break;
+		case GLFW_KEY_E:
+		{
+			m_pos += glm::vec3(0, -1, 0) * deltaTime * mouseSpeed;
+			Ret = true;
+		} break;
+	}		
 
 	return Ret;
 }

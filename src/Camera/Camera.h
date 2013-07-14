@@ -1,7 +1,7 @@
 #ifndef Camera_h
 #define Camera_h
-#include <GL\glew.h>
-#include <GL\glfw.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <glm\glm.hpp>
@@ -62,14 +62,16 @@ public:
 	Camera(int windowWidth, int windowHeight);
 	Camera(int windowWidth, int windowHeight, const glm::vec3 &Pos, const glm::vec3 & Target, const glm::vec3 &Up );
 
-	bool onKeyboard( int key, int action );
-	void onMouseButton(int button, int action);
-	void onMousePos(int x, int y );
+	bool onKeyboard(GLFWwindow * window, int key, int action );
+	bool onKeyboardCharacters(GLFWwindow * window, unsigned int character);
+	void onMouseButton(GLFWwindow * window, int button, int action);
+	void onMousePos(GLFWwindow * window, int x, int y );
 	void onRender();
 		
-	static void GLFWCALL keyWrapper(int key, int action);
-	static void GLFWCALL mouseButtonWrapper(int button, int action);
-	static void GLFWCALL mousePosWrapper(int x, int y);
+	static void keyboardWrapper(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void keyboardCharactersWrapper(GLFWwindow * window, unsigned int character);
+	static void mousePosWrapper(GLFWwindow* window, double x, double y);
+	static void mouseButtonWrapper(GLFWwindow * window, int button, int action, int mods);
 
 	float getDeltaTime();
 	void checkFPS();

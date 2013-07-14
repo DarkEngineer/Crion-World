@@ -1,6 +1,5 @@
  
 #include <GL/glew.h>
-#include <GL/glfw.h>
 #include <GL/GL.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,6 +13,8 @@ int main()
 {
 	Game * application = new Game();
 	game = application;
+	if(!glfwInit())
+		exit(EXIT_FAILURE);
 	application->createWindow(800, 600);
 	GLenum res = glewInit();
 	if( res != GLEW_OK)
@@ -24,13 +25,12 @@ int main()
 	application->init();
 	glEnable(GL_DEPTH_TEST);
 
-	glfwEnable(GLFW_KEY_REPEAT);
-
-	while(glfwGetWindowParam(GLFW_OPENED) && !(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS) )
+	while(!glfwWindowShouldClose(application->getWindow()))
 	{
 		application->render();
 	}
 	
+	application->destroyWindow();
 	glfwTerminate();
 	return 0;
 }

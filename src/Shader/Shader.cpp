@@ -105,7 +105,6 @@ void Shader::getShaderLogInfo( GLuint shader )
 		glGetShaderInfoLog( shader, 512, NULL, buffer );
 		logs << buffer;
 		logs.close();
-		glfwInit();
 		GLint retParam;
 		 glGetShaderiv(shader, GL_COMPILE_STATUS, &retParam);
 		if(retParam != GL_TRUE)
