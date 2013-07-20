@@ -2,21 +2,60 @@
 
 Object::Object()
 {
-	pos_manager = new Pipeline();
 	mesh = new Mesh();
+	pos_manager = new Pipeline();
 	position = glm::vec3(0.0f, 0.0f, 0.0f);
+	status = STATIC;
+	physics = DISABLE;
 }
 
+void Object::init(glm::vec3 & position)
+{
+	//require bounding box for details
+}
 void Object::render()
 {
+	mesh->render();
 }
+
+
+bool Object::create(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
+{
+	this->position = position;
+	if(mesh->setTexturePath(fileStructure))
+	{
+		mesh->loadMesh(sourceMesh);
+		pos_manager->worldPos(position.x, position.y, position.z);
+		pos_matrix = * pos_manager->getWorldTrans();
+
+		return true;
+	}
+	else
+		return false;
+
+}
+
+bool Object::create(const char * sourceMesh, const char * fileStructure)
+{
+	if(mesh->setTexturePath(fileStructure))
+	{
+		mesh->loadMesh(sourceMesh);
+		pos_manager->worldPos(position.x, position.y, position.z);
+		pos_matrix = * pos_manager->getWorldTrans();
+		return true;
+	}
+	else
+		return false;
+}
+
+
 
 Object::~Object()
 {
-	delete pos_manager;
 	delete & position;
 	delete mesh;
-	delete & state;
+	delete pos_manager;
+	delete & pos_matrix;
 	delete & status;
 	delete & physics;
 

@@ -6,35 +6,32 @@
 class Object
 {
 	//BoundingBox * box;
-	Pipeline * pos_manager;
 	glm::vec3 position;
+	glm::mat4 pos_matrix;
 	Mesh * mesh;
-	enum
-	{
-		STANDING,
-		RUNNING,
-		DEAD,
-		SHOOTING,
-		SITTING
-	} state;
+	Pipeline * pos_manager;
 
-	enum
+
+	enum Status
 	{
 		STATIC,
 		DYNAMIC
 	} status;
 
-	enum
+	enum Physic
 	{
 		ENABLE,
 		DISABLE
 	} physics;
 
-	void init();
+	void init(glm::vec3 & position);
+
 public:
 	Object();
 	virtual ~Object();
 
+	virtual bool create(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
+	virtual bool create(const char * sourceMesh, const char * fileStructure);
 	virtual void render();
 };
 
