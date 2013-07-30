@@ -3,9 +3,8 @@
 #include "../Camera/Camera.h"
 #include "../Object/Object.h"
 
-class Player
+class Player : public Object
 {
-	Object * body;
 	Camera * player_camera;
 
 	enum Status
@@ -29,11 +28,8 @@ class Player
 
 public:
 	Player();
-	
-	virtual void create(const char * sourceMesh, const char * fileStructure);
-	virtual void create(glm::vec3 positon, const char * sourceMesh, const char * fileStructure);
-	virtual Object * getBody();
 	virtual Camera * getCamera();
+	bool move(GLFWwindow * window, int key, int scancode, int action, int mods);
 	virtual ~Player();
 };
 

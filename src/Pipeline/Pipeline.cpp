@@ -1,27 +1,23 @@
 #include "Pipeline.h"
 
-Pipeline * pipeline;
 
 Pipeline::Pipeline()
+	:
+	m_scale(glm::vec3(1.0f, 1.0f, 1.0f)),
+	m_worldPos(glm::vec3(0.0f, 0.0f, 0.0f)),
+	m_rotateInfo(glm::vec3(0.0f, 0.0f, 0.0f))
 {
-	m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	m_worldPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_rotateInfo = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_persProj.FOV = 60.0f;
 	m_persProj.width = 800.0f;
 	m_persProj.height = 600.0f;
 	m_persProj.zNear = 0.001f;
 	m_persProj.zFar = 100.0f;
+
 }
 
 Pipeline::~Pipeline()
 {
 	delete m_camera;
-	delete & m_persProj;
-	delete & m_scale;
-	delete & m_worldPos;
-	delete & m_rotateInfo;
-	delete & m_wvpmatrix;
 }
 
 Camera * Pipeline::getCamera()

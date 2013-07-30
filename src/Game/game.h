@@ -1,15 +1,14 @@
 #ifndef Game_h
 #define Game_h
 #include "../Lighting/LightingTechnique.h"
-#include "../Mesh/Mesh.h"
 #include "../Pipeline/Pipeline.h"
 #include "../FBOShadow/FrameBufferShadowMap.h"
 #include "../ShadowMapTechnique/ShadowMapTechnique.h"
+#include "../Object_manager/Object_manager.h"
 #include <string>
 
 class Game
 {
-	GLFWmonitor * monitor;
 	GLFWwindow * window;
 	LightingTechnique * m_pLightingEffect;
 	ShadowMapTechnique * m_pShadowMapEffect;
@@ -20,12 +19,14 @@ class Game
 	DirectionalLight * m_directionalLight;
 	PointLight * pointLight;
 	SpotLight * spotLight;
-	Mesh * mesh;
+	Object_manager * m_objects;
+
 	struct
 	{
 		int m_windowWidth;
 		int m_windowHeight;
 	};
+
 	bool initLight();
 	bool initModels();
 	bool initCallbacks();
@@ -36,6 +37,7 @@ class Game
 	void renderSpotLights();
 	virtual void shadowMapPass();
 	virtual void renderPass();
+	void addObjects();
 
 public:
 	Game();
@@ -45,8 +47,8 @@ public:
 	void destroyWindow();
 
 	bool init();
-	virtual void render();
-	Mesh * getMesh();
+	virtual void render(); // main render function use it in main class for rendering
+	Object_manager * getObjects();
 	GLFWwindow * getWindow();
 
 	void onKeyboard(GLFWwindow* window, int key, int action);

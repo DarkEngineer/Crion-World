@@ -2,7 +2,6 @@
 
 Player::Player()
 {
-	body = new Object();
 	player_camera = new Camera();
 	state = STANDING;
 	statistics.experience = 0;
@@ -13,20 +12,12 @@ Player::Player()
 
 }
 
-void Player::create(const char* sourceMesh, const char * fileStructure)
+Camera * Player::getCamera()
 {
-	body->create(sourceMesh, fileStructure);
-}
-
-void Player::create(glm::vec3 position, const char * sourceMesh, const char * fileStructure)
-{
-	body->create(position, sourceMesh, fileStructure);
+	return player_camera;
 }
 
 Player::~Player()
 {
-	delete body;
 	delete player_camera;
-	delete & state;
-	delete & statistics;
 }

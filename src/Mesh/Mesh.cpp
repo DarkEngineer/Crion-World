@@ -7,9 +7,6 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {
   clear();
-  delete & m_Entries;
-  delete & m_Textures;
-  delete & m_texturePath;
 }
 
 void Mesh::clear()

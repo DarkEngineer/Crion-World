@@ -1,13 +1,23 @@
 #include "Object.h"
 
 Object::Object()
+	: 
+	position(glm::vec3(0.0f, 0.0f, 0.0f)),
+	status(STATIC),
+	physics(DISABLE)
 {
 	mesh = new Mesh();
 	pos_manager = new Pipeline();
-	position = glm::vec3(0.0f, 0.0f, 0.0f);
-	status = STATIC;
-	physics = DISABLE;
 }
+
+Object::Object(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
+{
+}
+
+Object::Object(const char * sourceMesh, const char * fileStructure)
+{
+}
+
 
 void Object::init(glm::vec3 & position)
 {
@@ -52,11 +62,7 @@ bool Object::create(const char * sourceMesh, const char * fileStructure)
 
 Object::~Object()
 {
-	delete & position;
 	delete mesh;
 	delete pos_manager;
-	delete & pos_matrix;
-	delete & status;
-	delete & physics;
 
 }
