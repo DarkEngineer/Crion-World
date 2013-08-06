@@ -81,18 +81,18 @@ void Game::initSpotLights()
 bool Game::initModels()
 {
 	bool value = false;
-	if(m_objects->addObject(glm::vec3(4, 0, 0), "models/human_body.3ds", "images") )
-	{
-		std::cout << "Object" << " created" << std::endl;
-		value = true;
+		if(m_objects->addObject(glm::vec3(0, 6, 0), "models/human_body.3ds", "images") )
+		{
+			std::cout << "Object" << " created" << std::endl;
+			value = true;
 
-	}
-	else
-	{
-		std::cout << "Object creation failed" << std::endl;
-		value = false;
-	}
-
+		}
+		else
+		{
+			std::cout << "Object creation failed" << std::endl;
+			value = false;
+		}
+	
 	if(m_objects->addObject(glm::vec3(0, -3, 0), "models/studnia.3ds", "images"))
 	{
 		std::cout << "Object" << " created" << std::endl;
@@ -105,6 +105,10 @@ bool Game::initModels()
 		value = false;
 	}
 
+	for(std::vector<std::unique_ptr<Object>>::iterator iter = m_objects->getObjects().begin();  iter != m_objects->getObjects().end(); iter++)
+	{
+		std::cout << "Object coords: x:" << (* iter)->getPosition().x << " y:" << (*iter)->getPosition().y << " z:" << (*iter)->getPosition().z << std::endl;
+	}
 	return value;
 }
 
@@ -118,11 +122,12 @@ void Game::createWindow(int windowWidth, int windowHeight)
 	if(!window)
 		exit(EXIT_FAILURE);
 	glfwMakeContextCurrent(window);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
+	/*
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	*/
 	glewExperimental = GL_TRUE;
 	
 }
@@ -145,7 +150,7 @@ void Game::shadowMapPass()
 	pipe->setCamera(spotLight->position, spotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
 	pipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
 	m_pShadowMapEffect->setMatrix(* pipe->getTrans());
-	m_objects->render();
+	m_objects->render(pipe, * m_pLightingEffect);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); 
 }
 
@@ -156,19 +161,9 @@ void Game::renderPass()
 	m_pLightingEffect->enable();
 	renderPointLights();
 	renderSpotLights();
-	pipe->scale(1.0f, 1.0f, 1.0f);
-	pipe->rotate(0.0f, 0.0f, 0.0f);
+	renderLightEffects();
 	pipe->setCamera(gameCamera->GetPos(), gameCamera->GetTarget(), gameCamera->GetUp());
-	m_pLightingEffect->setWVP(* pipe->getTrans());
-	m_pLightingEffect->setWorldMatrix(* pipe->getWorldTrans());
-	m_pLightingEffect->setNormalMatrix(glm::transpose(glm::inverse(glm::mat3((*pipe->getWorldTrans())))));
-	m_pLightingEffect->setEyeWorldPos(gameCamera->GetPos());
-	m_pLightingEffect->setSpecularIntensity(1.0f);
-	m_pLightingEffect->setSpecularPower(32);
-	m_pLightingEffect->setDirectionalLight(*m_directionalLight);
-	pipe->setCamera(spotLight->position, spotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
-	m_pLightingEffect->setLightMatrix(* pipe->getTrans());
-	m_objects->render();
+	m_objects->render(pipe, * m_pLightingEffect);
 }
 
 void Game::render()
@@ -200,13 +195,27 @@ void Game::renderPointLights()
 
 void Game::renderSpotLights()
 {
-	//spotLight->diffuseIntensity = 0.9f;
-	//spotLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
-	//spotLight->position = gameCamera->GetPos();
-	//spotLight->direction = gameCamera->GetTarget();
-	//spotLight->attentuation.linear = 0.5f;
-	//spotLight->cutoff = 5.0f;
+	spotLight->diffuseIntensity = 0.9f;
+	spotLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	spotLight->position = gameCamera->GetPos();
+	spotLight->direction = gameCamera->GetTarget();
+	spotLight->attentuation.linear = 0.5f;
+	spotLight->cutoff = 5.0f;
 	m_pLightingEffect->setSpotLights(1, spotLight);
+
+}
+
+void Game::renderLightEffects()
+{
+	m_pLightingEffect->setWVP(* pipe->getTrans());
+	m_pLightingEffect->setWorldMatrix(* pipe->getWorldTrans());
+	m_pLightingEffect->setNormalMatrix(glm::transpose(glm::inverse(glm::mat3((*pipe->getWorldTrans())))));
+	m_pLightingEffect->setEyeWorldPos(gameCamera->GetPos());
+	m_pLightingEffect->setSpecularIntensity(1.0f);
+	m_pLightingEffect->setSpecularPower(32);
+	m_pLightingEffect->setDirectionalLight(*m_directionalLight);
+	pipe->setCamera(spotLight->position, spotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
+	m_pLightingEffect->setLightMatrix(* pipe->getTrans());
 
 }
 

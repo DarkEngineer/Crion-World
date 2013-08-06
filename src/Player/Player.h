@@ -26,10 +26,13 @@ class Player : public Object
 		int experience;
 	} statistics;
 
+	bool bCreate;
 public:
 	Player();
+	bool ifCreated(bool state);
 	virtual Camera * getCamera();
 	bool move(GLFWwindow * window, int key, int scancode, int action, int mods);
+	bool getCreateStatus();
 	virtual ~Player();
 };
 

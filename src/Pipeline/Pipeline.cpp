@@ -114,11 +114,8 @@ void Pipeline::initRotateTransform(glm::mat4 &m) const
 
 void Pipeline::initTranslateTransform(glm::mat4 &m) const
 {
-	m = glm::mat4(1.0f, 0.0f, 0.0f, m_worldPos.x,
-				  0.0f, 1.0f, 0.0f, m_worldPos.y,
-				  0.0f, 0.0f, 1.0f, m_worldPos.z,
-				  0.0f, 0.0f, 0.0f, 1.0f);
 	// moving around the world
+	m = glm::translate(m_worldPos.x, m_worldPos.y, m_worldPos.z);
 }
 
 void Pipeline::initPerspectiveProj(glm::mat4 &m) const
@@ -155,7 +152,7 @@ const glm::mat4 * Pipeline::getWorldTrans()
 	return & m_worldMatrix;
 }
 
-const glm::mat4 * Pipeline::getTrans()
+const glm::mat4 * Pipeline::getTrans() 
 {
 	getWorldTrans();
 	glm::mat4 perspectiveProjTrans, cameraTrans;
@@ -166,4 +163,10 @@ const glm::mat4 * Pipeline::getTrans()
 	m_wvpmatrix = perspectiveProjTrans * cameraTrans * m_worldMatrix;
 
 	return & m_wvpmatrix;
+}
+
+const glm::mat3 Pipeline::getNormalMatrix()
+{
+	const glm::mat3 normalMat = glm::transpose(glm::inverse(glm::mat3((*getWorldTrans()))));
+	return normalMat;
 }

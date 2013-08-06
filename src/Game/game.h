@@ -1,6 +1,5 @@
 #ifndef Game_h
 #define Game_h
-#include "../Lighting/LightingTechnique.h"
 #include "../Pipeline/Pipeline.h"
 #include "../FBOShadow/FrameBufferShadowMap.h"
 #include "../ShadowMapTechnique/ShadowMapTechnique.h"
@@ -35,6 +34,7 @@ class Game
 	void initSpotLights();
 	void renderPointLights();
 	void renderSpotLights();
+	void renderLightEffects();
 	virtual void shadowMapPass();
 	virtual void renderPass();
 	void addObjects();

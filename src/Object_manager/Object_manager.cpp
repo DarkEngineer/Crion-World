@@ -1,12 +1,10 @@
 #include "Object_manager.h"
 
 Object_manager::Object_manager()
-	:
-	player(0)
 {
 }
 
-Player * Object_manager::getPlayer()
+Player & Object_manager::getPlayer()
 {
 	return player;
 }
@@ -18,15 +16,14 @@ std::vector <std::unique_ptr<Object>> & Object_manager::getObjects()
 
 bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructure)
 {
-	player = new Player();
-	return player->create(sourceMesh, fileStructure);
+
+	return player.ifCreated(player.create(sourceMesh, fileStructure));
 
 }
 
 bool Object_manager::addPlayer(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
-	player = new Player();
-	return player->create(position, sourceMesh, fileStructure);
+	return player.ifCreated(player.create(position, sourceMesh, fileStructure));
 }
 
 bool Object_manager::addObject(const char * sourceMesh, const char * fileStructure)
@@ -47,22 +44,40 @@ bool Object_manager::addObject(glm::vec3 & position, const char * sourceMesh, co
 
 void Object_manager::render()
 {
-	if(player != 0)
-		player->render();
+	if(player.getCreateStatus())
+		player.render();
+
 	std::vector <std::unique_ptr<Object>>::iterator count;
 	for(count = objects.begin(); count != objects.end(); count++)
 		(*count)->render();
 }
 
-void Object_manager::render(LightingTechnique & manager_position)
+void Object_manager::render(Pipeline * manager, LightingTechnique & position_reader)
 {
-	if(player != 0)
-		
+	if(player.getCreateStatus())
+	{
+		position_reader.setWorldMatrix(* player.getPipeline().getWorldTrans());
+		manager->worldPos(player.getPosition().x, player.getPosition().y, player.getPosition().z);
+		position_reader.setNormalMatrix(manager->getNormalMatrix());
+		position_reader.setWVP(* manager->getTrans());
+		player.render();
+	}
+
+	if(objects.size() > 0)
+	{
+		std::vector <std::unique_ptr<Object>>::iterator count;
+		for(count = objects.begin(); count != objects.end(); count++)
+		{
+			position_reader.setWorldMatrix(*(*count)->getPipeline().getWorldTrans());
+			manager->worldPos((*count)->getPosition().x, (*count)->getPosition().y, (*count)->getPosition().z);
+			position_reader.setNormalMatrix(manager->getNormalMatrix());
+			position_reader.setWVP(*manager->getTrans());
+			(* count)->render();
+		}
+	}
 }
 
 Object_manager::~Object_manager()
 {
-	delete player;
-	objects.clear();
 }
 

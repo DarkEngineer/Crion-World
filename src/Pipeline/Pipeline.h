@@ -31,8 +31,8 @@ class Pipeline
 	glm::vec3 m_rotateInfo;
 	glm::mat4 m_wvpmatrix;
 	glm::mat4 m_worldMatrix;
+	glm::mat4 m_normalMatrix;
 	
-
 	void initScaleTransform(glm::mat4 & m) const;
 	void initRotateTransform(glm::mat4 &m) const;
 	void initTranslateTransform(glm::mat4 &m) const;
@@ -56,6 +56,7 @@ public:
 
 	const glm::mat4 * getTrans();
 	const glm::mat4 * getWorldTrans();
+	const glm::mat3 getNormalMatrix();
 	virtual ~Pipeline();
 };
 

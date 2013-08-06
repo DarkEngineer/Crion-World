@@ -7,19 +7,19 @@
 
 class Object_manager
 {
-	Player * player;
+	Player player;
 	std::vector <std::unique_ptr<Object>> objects;
 
 
 public:
-	Player * getPlayer();
+	Player & getPlayer();
 	std::vector <std::unique_ptr<Object>> & getObjects();
 	bool addPlayer(const char * sourceMesh, const char * fileStructure);
 	bool addPlayer(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
 	bool addObject(const char * sourceMesh, const char * fileStructure);
 	bool addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
 	virtual void render();
-	virtual void render(LightingTechnique & manager_position);
+	virtual void render(Pipeline * manager, LightingTechnique & position_reader);
 
 	Object_manager();
 	virtual ~Object_manager();
