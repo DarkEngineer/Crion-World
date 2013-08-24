@@ -107,9 +107,7 @@ void Camera::onMousePos(GLFWwindow * window, int x, int y )
 		glfwSetCursorPos(window, m_windowWidth/2, m_windowHeight/2);
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		m_AngleH += mouseSpeed * deltaTime * static_cast<float>((m_windowWidth/2 - x));
-		std::cout << m_AngleH << std::endl;
 		m_AngleV += mouseSpeed * deltaTime * static_cast<float>((m_windowHeight/2 - y));
-		std::cout << m_AngleV << std::endl;
 		if(m_AngleV > 90.0f)
 			m_AngleV = 90.0f;
 		if(m_AngleV < -90.0f)

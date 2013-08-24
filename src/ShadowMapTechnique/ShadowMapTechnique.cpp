@@ -17,6 +17,7 @@ bool ShadowMapTechnique::init()
 
 	if(!finalize())
 		return false;
+	glBindFragDataLocation(getShaderProg(), 0, "fragColor");
 
 	m_WVPLocation = getUniformLocation("gWVP");
 	m_textureLocation = getUniformLocation("gShadowMap");
@@ -40,6 +41,4 @@ void ShadowMapTechnique::setTextureUnit(unsigned int textureUnit)
 
 ShadowMapTechnique::~ShadowMapTechnique()
 {
-	delete & m_WVPLocation;
-	delete & m_textureLocation;
 }

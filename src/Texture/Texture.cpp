@@ -27,7 +27,6 @@ bool Texture::Load()
 	
 	glGenTextures(1, &t_Texture);
 	glBindTexture(m_textureTarget, t_Texture);
-	checkerror();
 	//Initialize texture with image data
 	glTexImage2D(m_textureTarget, 0, GL_RGB, FreeImage->Width(), FreeImage->Height(), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage->Bits());
 	

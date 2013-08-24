@@ -6,24 +6,24 @@ Game::Game()
 	:
 	m_scale(1.0f),
 	m_windowWidth(800),
-	m_windowHeight(600)
+	m_windowHeight(600),
+	m_pObjects(new Object_manager()),
+	m_pSkybox(NULL)
 {
 	initDirectionaLights();
 	initSpotLights();
-	m_pShadowMapEffect = new ShadowMapTechnique();
-	m_objects = new Object_manager();
 
 }
 
 bool Game::init()
 {
-	pipe = new Pipeline();
-	pipe->setCamera(m_windowWidth, m_windowHeight);
-	pipe->init();
-	gameCamera = pipe->getCamera();
-	m_shadowMap = new ShadowMap();
+	m_pPipe = new Pipeline();
+	m_pPipe->setCamera(m_windowWidth, m_windowHeight);
+	m_pPipe->init();
+	m_pGameCamera = m_pPipe->getCamera();
+	m_pShadowMap = new ShadowMap();
 
-	if(!m_shadowMap->initShadow(m_windowWidth, m_windowHeight))
+	if(!m_pShadowMap->initShadow(m_windowWidth, m_windowHeight))
 		return false;
 
 	m_pLightingEffect = new LightingTechnique();
@@ -31,7 +31,7 @@ bool Game::init()
 		return false;
 
 	m_pLightingEffect->enable();
-	m_pLightingEffect->setSpotLights(1, spotLight);
+	m_pLightingEffect->setSpotLights(1, m_pSpotLight);
 	m_pLightingEffect->setTextureUnit(0);
 	m_pLightingEffect->setShadowMapTextureUnit(1);
 
@@ -42,22 +42,25 @@ bool Game::init()
 	if(!initModels())
 		std::cout << "LOG: Models error" << std::endl;
 
-	cam = gameCamera;
-	glfwSetMouseButtonCallback(window, Game::mouseButtonWrapper);
-	glfwSetCharCallback(window, Game::keyboardCharactersWrapper);
-	glfwSetCursorPosCallback(window, Game::mousePosWrapper);
-	glfwSetKeyCallback(window, Game::keyboardWrapper);
+	if(!initSkybox())
+		std::cout << "LOG: Skybox initialization error!" << std::endl;
+
+	cam = m_pGameCamera;
+	glfwSetMouseButtonCallback(m_pWindow, Game::mouseButtonWrapper);
+	glfwSetCharCallback(m_pWindow, Game::keyboardCharactersWrapper);
+	glfwSetCursorPosCallback(m_pWindow, Game::mousePosWrapper);
+	glfwSetKeyCallback(m_pWindow, Game::keyboardWrapper);
 
 	return true;
 }
 
 void Game::initDirectionaLights()
 {
-	m_directionalLight = new DirectionalLight();
-	m_directionalLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
-	m_directionalLight->ambientIntensity = 0.5f;
-    m_directionalLight->diffuseIntensity = 0.75f;
-    m_directionalLight->direction = glm::vec3(0.0, -1.0, 0.0);
+	m_pDirectionalLight = new DirectionalLight();
+	m_pDirectionalLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_pDirectionalLight->ambientIntensity = 0.5f;
+    m_pDirectionalLight->diffuseIntensity = 0.75f;
+    m_pDirectionalLight->direction = glm::vec3(0.0, -1.0, 0.0);
 
 }
 
@@ -67,21 +70,21 @@ void Game::initPointLights()
 
 void Game::initSpotLights()
 {
-		spotLight = new SpotLight[2];
-	spotLight[0].ambientIntensity = 0.1f;
-    spotLight[0].diffuseIntensity = 0.9f;
-    spotLight[0].color = glm::vec3(1.0f, 1.0f, 1.0f);
-    spotLight[0].attentuation.linear = 0.01f;
-    spotLight[0].position  = glm::vec3(0.0f, 40.0f, 1.0f);
-    spotLight[0].direction = glm::vec3(0.0f, -1.0f, 0.0f);
-    spotLight[0].cutoff =  20.0f;
+		m_pSpotLight = new SpotLight[2];
+	m_pSpotLight[0].ambientIntensity = 0.1f;
+    m_pSpotLight[0].diffuseIntensity = 0.9f;
+    m_pSpotLight[0].color = glm::vec3(1.0f, 1.0f, 1.0f);
+    m_pSpotLight[0].attentuation.linear = 0.01f;
+    m_pSpotLight[0].position  = glm::vec3(0.0f, 40.0f, 1.0f);
+    m_pSpotLight[0].direction = glm::vec3(0.0f, -1.0f, 0.0f);
+    m_pSpotLight[0].cutoff =  20.0f;
 
 }
 
 bool Game::initModels()
 {
 	bool value = false;
-		if(m_objects->addObject(glm::vec3(0, 6, 0), "models/human_body.3ds", "images") )
+		if(m_pObjects->addObject(glm::vec3(0, 6, 0), "models/human_body.3ds", "images") )
 		{
 			std::cout << "Object" << " created" << std::endl;
 			value = true;
@@ -93,7 +96,7 @@ bool Game::initModels()
 			value = false;
 		}
 	
-	if(m_objects->addObject(glm::vec3(0, -3, 0), "models/studnia.3ds", "images"))
+	if(m_pObjects->addObject(glm::vec3(0, -3, 0), "models/studnia.3ds", "images"))
 	{
 		std::cout << "Object" << " created" << std::endl;
 		value = true;
@@ -105,23 +108,32 @@ bool Game::initModels()
 		value = false;
 	}
 
-	for(std::vector<std::unique_ptr<Object>>::iterator iter = m_objects->getObjects().begin();  iter != m_objects->getObjects().end(); iter++)
+	for(std::vector<std::unique_ptr<Object>>::iterator iter = m_pObjects->getObjects().begin();  iter != m_pObjects->getObjects().end(); iter++)
 	{
 		std::cout << "Object coords: x:" << (* iter)->getPosition().x << " y:" << (*iter)->getPosition().y << " z:" << (*iter)->getPosition().z << std::endl;
 	}
 	return value;
 }
 
+bool Game::initSkybox()
+{
+	m_pSkybox = new Skybox(m_pGameCamera, * m_pPipe);
+
+	if(!m_pSkybox->init("images/", "cube_tex.jpg", "skybox_textura.jpg", "skybox_textura.jpg", "skybox_textura.jpg", "skybox_textura.jpg","skybox_textura.jpg"))
+		return false;
+
+	return true;
+}
 
 void Game::createWindow(int windowWidth, int windowHeight)
 {
 	glfwSetErrorCallback(Game::errorCallback);
 	m_windowWidth = windowWidth;
 	m_windowHeight = windowHeight;
-    window = glfwCreateWindow(windowWidth, windowHeight, "Crion World", NULL, NULL);
-	if(!window)
+    m_pWindow = glfwCreateWindow(windowWidth, windowHeight, "Crion World", NULL, NULL);
+	if(!m_pWindow)
 		exit(EXIT_FAILURE);
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(m_pWindow);
 	/*
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -134,23 +146,23 @@ void Game::createWindow(int windowWidth, int windowHeight)
 
 void Game::destroyWindow()
 {
-	glfwDestroyWindow(window);
+	glfwDestroyWindow(m_pWindow);
 }
 
 void Game::shadowMapPass()
 {
-	m_shadowMap->bindForWriting();
+	m_pShadowMap->bindForWriting();
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	m_pShadowMapEffect->enable();
 	
-	pipe->scale(1.0f, 1.0f, 1.0f);
-	pipe->rotate(0.0f, 0.0f, 0.0f);
-	pipe->setCamera(spotLight->position, spotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
-	pipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 100.0f);
-	m_pShadowMapEffect->setMatrix(* pipe->getTrans());
-	m_objects->render(pipe, * m_pLightingEffect);
+	m_pPipe->scale(1.0f, 1.0f, 1.0f);
+	m_pPipe->rotate(0.0f, 0.0f, 0.0f);
+	m_pPipe->setCamera(m_pSpotLight->position, m_pSpotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
+	m_pPipe->setPerspectiveProj(75.0f, static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 0.001f, 10000.0f);
+	m_pShadowMapEffect->setMatrix(* m_pPipe->getTrans());
+	m_pObjects->render(m_pPipe, * m_pLightingEffect);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); 
 }
 
@@ -162,101 +174,103 @@ void Game::renderPass()
 	renderPointLights();
 	renderSpotLights();
 	renderLightEffects();
-	pipe->setCamera(gameCamera->GetPos(), gameCamera->GetTarget(), gameCamera->GetUp());
-	m_objects->render(pipe, * m_pLightingEffect);
+	m_pPipe->setCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
+	m_pObjects->render(m_pPipe, * m_pLightingEffect);
+
+	m_pSkybox->render();
 }
 
 void Game::render()
 {
-	m_scale += 0.0057f;
-	pipe->render();
+	m_pPipe->render();
 
 	shadowMapPass();
 	renderPass();
 
-	glfwSwapBuffers(window);
+	glfwSwapBuffers(m_pWindow);
 	glfwPollEvents();
 } 
 
 void Game::renderPointLights()
 {
-	PointLight pointLight[2];
-	pointLight[0].diffuseIntensity = 1.0f;
-	pointLight[0].color = glm::vec3(0.25f, 0.5f, 0.0f);
-	pointLight[0].position = glm::vec3(6.0f * ((cosf(m_scale) + 3.0f) / 2.0f), 2.0f, (cosf(m_scale) + 1.0f) / 2.0f);
-	pointLight[0].attentuation.linear = 0.1f;
-	pointLight[1].diffuseIntensity = 1.0f;
-	pointLight[1].color = glm::vec3(0.0f, 0.5f, 0.25f);
-	pointLight[1].position = glm::vec3(2.0f, 7.0f, (sinf(m_scale) + 1.0f) / 2.0f);
-	pointLight[1].attentuation.linear = 0.1f;
-	m_pLightingEffect->setPointLights(2, pointLight);
+	PointLight m_pPointLight[2];
+	m_pPointLight[0].diffuseIntensity = 1.0f;
+	m_pPointLight[0].color = glm::vec3(0.25f, 0.5f, 0.0f);
+	m_pPointLight[0].position = glm::vec3(6.0f * ((cosf(m_scale) + 3.0f) / 2.0f), 2.0f, (cosf(m_scale) + 1.0f) / 2.0f);
+	m_pPointLight[0].attentuation.linear = 0.1f;
+	m_pPointLight[1].diffuseIntensity = 1.0f;
+	m_pPointLight[1].color = glm::vec3(0.0f, 0.5f, 0.25f);
+	m_pPointLight[1].position = glm::vec3(2.0f, 7.0f, (sinf(m_scale) + 1.0f) / 2.0f);
+	m_pPointLight[1].attentuation.linear = 0.1f;
+	m_pLightingEffect->setPointLights(2, m_pPointLight);
 
 }
 
 void Game::renderSpotLights()
 {
-	spotLight->diffuseIntensity = 0.9f;
-	spotLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
-	spotLight->position = gameCamera->GetPos();
-	spotLight->direction = gameCamera->GetTarget();
-	spotLight->attentuation.linear = 0.5f;
-	spotLight->cutoff = 5.0f;
-	m_pLightingEffect->setSpotLights(1, spotLight);
+	m_pSpotLight->diffuseIntensity = 0.9f;
+	m_pSpotLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_pSpotLight->position = m_pGameCamera->GetPos();
+	m_pSpotLight->direction = m_pGameCamera->GetTarget();
+	m_pSpotLight->attentuation.linear = 0.5f;
+	m_pSpotLight->cutoff = 5.0f;
+	m_pLightingEffect->setSpotLights(1, m_pSpotLight);
 
 }
 
 void Game::renderLightEffects()
 {
-	m_pLightingEffect->setWVP(* pipe->getTrans());
-	m_pLightingEffect->setWorldMatrix(* pipe->getWorldTrans());
-	m_pLightingEffect->setNormalMatrix(glm::transpose(glm::inverse(glm::mat3((*pipe->getWorldTrans())))));
-	m_pLightingEffect->setEyeWorldPos(gameCamera->GetPos());
+	m_pLightingEffect->setWVP(* m_pPipe->getTrans());
+	m_pLightingEffect->setWorldMatrix(* m_pPipe->getWorldTrans());
+	m_pLightingEffect->setNormalMatrix(glm::transpose(glm::inverse(glm::mat3((*m_pPipe->getWorldTrans())))));
+	m_pLightingEffect->setEyeWorldPos(m_pGameCamera->GetPos());
 	m_pLightingEffect->setSpecularIntensity(1.0f);
 	m_pLightingEffect->setSpecularPower(32);
-	m_pLightingEffect->setDirectionalLight(*m_directionalLight);
-	pipe->setCamera(spotLight->position, spotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
-	m_pLightingEffect->setLightMatrix(* pipe->getTrans());
+	m_pLightingEffect->setDirectionalLight(*m_pDirectionalLight);
+	m_pPipe->setCamera(m_pSpotLight->position, m_pSpotLight->direction, glm::vec3(0.0f, 1.0f, 0.0));
+	m_pLightingEffect->setLightMatrix(* m_pPipe->getTrans());
+	
 
 }
 
 Object_manager * Game::getObjects()
 {
-	return m_objects;
+	return m_pObjects;
 }
 
 GLFWwindow * Game::getWindow()
 {
-	return window;
+	return m_pWindow;
 }
 
-void Game::onKeyboard(GLFWwindow * window, int key, int action)
+void Game::onKeyboard(GLFWwindow * m_pWindow, int key, int action)
 {
 
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+	if(glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
 
 }
 
-void Game::onKeyboardCharacters(GLFWwindow * window, unsigned int character)
+void Game::onKeyboardCharacters(GLFWwindow * m_pWindow, unsigned int character)
 {
 		switch(character)
 		{
 		case GLFW_KEY_A:
-			m_directionalLight->ambientIntensity += 0.05f;
+			m_pDirectionalLight->ambientIntensity += 0.05f;
 			break;
 		case GLFW_KEY_S:
-			m_directionalLight->ambientIntensity -= 0.05f;
+			m_pDirectionalLight->ambientIntensity -= 0.05f;
 			break;
 		case GLFW_KEY_Z:
-			m_directionalLight->diffuseIntensity += 0.05f;
+			m_pDirectionalLight->diffuseIntensity += 0.05f;
 			break;
 		case GLFW_KEY_X:
-			m_directionalLight->diffuseIntensity -= 0.05f;
+			m_pDirectionalLight->diffuseIntensity -= 0.05f;
 			break;
 		}
 
-	//if(m_directionalLight->ambientIntensity < 0.0f)
-	//	m_directionalLight->ambientIntensity = 0.0f;
+	//if(m_pDirectionalLight->ambientIntensity < 0.0f)
+	//	m_pDirectionalLight->ambientIntensity = 0.0f;
 
 }
 
@@ -265,35 +279,35 @@ void Game::errorCallback(int error, const char* description)
 	std::cout << error << " " << description << std::endl;
 }
 
-void Game::keyboardWrapper(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Game::keyboardWrapper(GLFWwindow* m_pWindow, int key, int scancode, int action, int mods)
 {
-	cam->onKeyboard(window, key, action);
-	game->onKeyboard(window, key, action);
+	cam->onKeyboard(m_pWindow, key, action);
+	game->onKeyboard(m_pWindow, key, action);
 
 }
 
-void Game::keyboardCharactersWrapper(GLFWwindow * window, unsigned int character)
+void Game::keyboardCharactersWrapper(GLFWwindow * m_pWindow, unsigned int character)
 {
-	game->onKeyboardCharacters(window, character);
-	cam->onKeyboardCharacters(window, character);
+	game->onKeyboardCharacters(m_pWindow, character);
+	cam->onKeyboardCharacters(m_pWindow, character);
 }
 
-void Game::mouseButtonWrapper(GLFWwindow * window, int button, int action, int mods)
+void Game::mouseButtonWrapper(GLFWwindow * m_pWindow, int button, int action, int mods)
 {
-	cam->onMouseButton(window, button, action);
+	cam->onMouseButton(m_pWindow, button, action);
 }
 
-void Game::mousePosWrapper(GLFWwindow * window, double x, double y)
+void Game::mousePosWrapper(GLFWwindow * m_pWindow, double x, double y)
 {
-	cam->onMousePos(window, x, y);
+	cam->onMousePos(m_pWindow, x, y);
 }
 
 Game::~Game()
 {
 	delete m_pShadowMapEffect;
-	delete gameCamera;
-	delete pipe;
+	delete m_pGameCamera;
+	delete m_pPipe;
 	delete m_pLightingEffect;
-	delete pointLight;
-	delete m_directionalLight;
+	delete m_pPointLight;
+	delete m_pDirectionalLight;
 }

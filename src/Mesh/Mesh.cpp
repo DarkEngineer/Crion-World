@@ -182,7 +182,7 @@ bool Mesh::initMaterials(const aiScene* pScene, const std::string &filename)
 
 		if(!m_Textures[i])
 		{
-			m_Textures[i] = new Texture(GL_TEXTURE_2D, "images/chessboard.jpg");
+			m_Textures[i] = new Texture(GL_TEXTURE_2D, "images/default/chessboard.jpg");
 			Ret = m_Textures[i]->Load();
 		}
 	}

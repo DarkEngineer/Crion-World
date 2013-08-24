@@ -4,21 +4,24 @@
 #include "../FBOShadow/FrameBufferShadowMap.h"
 #include "../ShadowMapTechnique/ShadowMapTechnique.h"
 #include "../Object_manager/Object_manager.h"
+#include "../Skybox/Skybox.h"
 #include <string>
 
 class Game
 {
-	GLFWwindow * window;
+	GLFWwindow * m_pWindow;
 	LightingTechnique * m_pLightingEffect;
 	ShadowMapTechnique * m_pShadowMapEffect;
-	ShadowMap * m_shadowMap;
-	Pipeline * pipe;
-	Camera * gameCamera;
+	ShadowMap * m_pShadowMap;
+	Pipeline * m_pPipe;
+	Camera * m_pGameCamera;
 	float m_scale;
-	DirectionalLight * m_directionalLight;
-	PointLight * pointLight;
-	SpotLight * spotLight;
-	Object_manager * m_objects;
+	DirectionalLight * m_pDirectionalLight;
+	PointLight * m_pPointLight;
+	SpotLight * m_pSpotLight;
+	Object_manager * m_pObjects;
+	Skybox * m_pSkybox;
+
 
 	struct
 	{
@@ -28,6 +31,7 @@ class Game
 
 	bool initLight();
 	bool initModels();
+	bool initSkybox();
 	bool initCallbacks();
 	void initDirectionaLights();
 	void initPointLights();
