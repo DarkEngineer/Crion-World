@@ -39,6 +39,7 @@ class Game
 	void renderPointLights();
 	void renderSpotLights();
 	void renderLightEffects();
+	void renderSkybox();
 	virtual void shadowMapPass();
 	virtual void renderPass();
 	void addObjects();
@@ -51,7 +52,7 @@ public:
 	void destroyWindow();
 
 	bool init();
-	virtual void render(); // main render function use it in main class for rendering
+	virtual void render(); // main render function use it for rendering
 	Object_manager * getObjects();
 	GLFWwindow * getWindow();
 

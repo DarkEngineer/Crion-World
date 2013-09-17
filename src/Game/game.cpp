@@ -119,8 +119,10 @@ bool Game::initSkybox()
 {
 	m_pSkybox = new Skybox(m_pGameCamera, * m_pPipe);
 
-	if(!m_pSkybox->init("images/", "cube_tex.jpg", "skybox_textura.jpg", "skybox_textura.jpg", "skybox_textura.jpg", "skybox_textura.jpg","skybox_textura.jpg"))
+	if(!m_pSkybox->init("images/skybox_tex"))
 		return false;
+	else
+		std::cout << "Skybox created!" << std::endl;
 
 	return true;
 }
@@ -177,7 +179,7 @@ void Game::renderPass()
 	m_pPipe->setCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
 	m_pObjects->render(m_pPipe, * m_pLightingEffect);
 
-	m_pSkybox->render();
+	renderSkybox();
 }
 
 void Game::render()
@@ -231,6 +233,11 @@ void Game::renderLightEffects()
 	m_pLightingEffect->setLightMatrix(* m_pPipe->getTrans());
 	
 
+}
+
+void Game::renderSkybox()
+{
+	m_pSkybox->render();
 }
 
 Object_manager * Game::getObjects()
@@ -299,7 +306,7 @@ void Game::mouseButtonWrapper(GLFWwindow * m_pWindow, int button, int action, in
 
 void Game::mousePosWrapper(GLFWwindow * m_pWindow, double x, double y)
 {
-	cam->onMousePos(m_pWindow, x, y);
+	cam->onMousePos(m_pWindow, static_cast<int>(x), static_cast<int>(y));
 }
 
 Game::~Game()

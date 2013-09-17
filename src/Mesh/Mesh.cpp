@@ -1,6 +1,8 @@
 #include "Mesh.h"
 
 Mesh::Mesh()
+	:
+	m_texturePath("")
 {
 }
 
@@ -63,20 +65,19 @@ bool Mesh::loadMesh(const std::string & filename)
 // reading path of file where textures are contained in string
 bool Mesh::setTexturePath(std::string &filename)
 {
-	std::string undef = "";
 	m_texturePath = filename;
-	if(!(m_texturePath == filename && m_texturePath != undef) )
+	if(!(m_texturePath == filename ) )
 		return false;
 
 	return true;
 }
 
 // reading path in chars
-bool Mesh::setTexturePath(const char* & filename)
+bool Mesh::setTexturePath(const char* filename)
 {
 	std::string undef = "";
 	m_texturePath = filename;
-	if(!(m_texturePath == filename && m_texturePath != undef))
+	if(!(m_texturePath == filename))
 		return false;
 
 	return true;
@@ -150,34 +151,36 @@ bool Mesh::initMaterials(const aiScene* pScene, const std::string &filename)
 	for(unsigned int i = 0; i < pScene->mNumMaterials; i++)
 	{
 		const aiMaterial *pMaterial = pScene->mMaterials[i];
-		m_Textures[i] = NULL;
 		if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) 
 		{
-            aiString path;
-			std::string slash = "/";
+				m_Textures[i] = NULL;
 
-			if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
-			{
-				std::string fullPath;
-				if(&m_texturePath != NULL)
-				{
-					fullPath = m_texturePath + slash + path.data;
-				}
-				else
-				{
-					fullPath = path.data;
-				}
-				m_Textures[i] = new Texture(GL_TEXTURE_2D, fullPath.c_str());
+				aiString path;
+				std::string slash = "/";
 
-				if(!m_Textures[i]->Load())
+				if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
 				{
-					std::cout << "Error Loading texture " << fullPath.c_str() << std::endl;
-					delete m_Textures[i];
-					m_Textures[i] = NULL;
-					Ret = false;
+					std::cout << "Data: " << path.data << std::endl;
+					std::string fullPath;
+					if(&m_texturePath != NULL)
+					{
+						fullPath = m_texturePath + slash + path.data;
+					}
+					else
+					{
+						fullPath = path.data;
+					}
+					m_Textures[i] = new Texture(GL_TEXTURE_2D, fullPath.c_str());
 
+					if(!m_Textures[i]->Load())
+					{
+						std::cout << "Error with loading texture " << fullPath.c_str() << std::endl;
+						delete m_Textures[i];
+						m_Textures[i] = NULL;
+						Ret = false;
+
+					}
 				}
-			}
 		}
 
 		if(!m_Textures[i])

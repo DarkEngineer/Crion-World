@@ -8,7 +8,6 @@
 class Skybox
 {
 	SkyboxTechnique * m_pSkyboxTechnique;
-	CubemapTexture * m_pCubemapTexture;
 	const Camera * m_pCamera;
 	Mesh * m_pMesh;
 	Pipeline m_projInfo;
@@ -18,14 +17,7 @@ public:
 
 	~Skybox();
 
-	bool init(const std::string & directory,
-				const std::string & posXFilename,
-				const std::string & negXFilename,
-				const std::string & posYFilename,
-				const std::string & negYFilename,
-				const std::string & posZFilename,
-				const std::string & negZFilename);
-
+	bool Skybox::init(const std::string & directory);
 	void render();
 };
 

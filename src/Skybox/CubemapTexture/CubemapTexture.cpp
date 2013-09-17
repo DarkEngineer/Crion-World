@@ -1,5 +1,11 @@
 #include "CubemapTexture.h"
 
+static GLenum textureSides[6] = { GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+								GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+								GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+								GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+								GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+								GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
 
 
 CubemapTexture::CubemapTexture()
@@ -31,28 +37,11 @@ CubemapTexture::CubemapTexture(const std::string & directory,
 	m_textureObject = NULL;
 }
 
-/*
-CubemapTexture::CubemapTexture(const char * directory,
-							   const char * posXFilename,
-							   const char * negXFilename,
-							   const char * posYFilename,
-							   const char * negYFilename,
-							   const char * posZFilename,
-							   const char * negZFilename)
-{
-}
-*/
 bool CubemapTexture::load()
 {
-	GLenum textureSides[6] = { GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-								GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-								GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-								GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-								GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-								GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
 
 	glGenTextures(1, &m_textureObject);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_textureObject);
+	glBindTexture(GL_TEXTURE_2D, m_textureObject);
 
 	for(int i = 0; i < ARRAYSIZE(m_fileName); i++)
 	{
@@ -74,9 +63,16 @@ bool CubemapTexture::load()
 			t_Image = std::unique_ptr<FIBITMAP>(FreeImage_Load( FreeImageFormat, m_fileName[i].c_str()));
 			std::cout << "Loading: " << m_fileName[i] << std::endl;
 		}
-		glBindTexture(textureSides[i], m_textureObject);
+		else
+			t_Image = std::unique_ptr<FIBITMAP>(FreeImage_Load( FreeImageFormat, "images/default/chessboard.jpg"));
+		
+		
+		glTexImage2D(textureSides[i], 0, GL_RGB, FreeImage_GetWidth(t_Image.get()), FreeImage_GetHeight(t_Image.get()), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage_GetBits(t_Image.get()));
 
-		glTexImage2D(textureSides[i], 0, GL_RGB, FreeImage_GetWidth(t_Image.get()), FreeImage_GetHeight(t_Image.get()), 0, GL_BGR, GL_UNSIGNED_INT, FreeImage_GetBits(t_Image.get()));
+		glTexParameteri(textureSides[i], GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(textureSides[i], GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(textureSides[i], GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(textureSides[i], GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	}
 
@@ -85,8 +81,8 @@ bool CubemapTexture::load()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
+	
 	return true;
 }
 

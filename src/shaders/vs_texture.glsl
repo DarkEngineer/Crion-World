@@ -19,7 +19,6 @@ void main()
 	gl_Position = gWVP * vec4(position, 1.0);
 	lightSpacePos = gLightMatrix * vec4(position, 1.0);
 	texCoord0 = TexCoord;
-	mat4 normalMatrix = inverse(gWorld);
 	normal0 = vec3(gNormalMatrix * normal);
 	worldPos0 = vec3(gWorld * vec4(position, 1.0));
 

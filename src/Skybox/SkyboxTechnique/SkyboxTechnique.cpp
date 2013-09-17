@@ -18,8 +18,6 @@ bool SkyboxTechnique::init()
 	if(!finalize())
 		return false;
 
-		glBindFragDataLocation(getShaderProg(), 0, "fragColor");
-
 	m_WVPLocation = getUniformLocation("gWVP");
 	m_textureLocation = getUniformLocation("gCubemapTexture");
 

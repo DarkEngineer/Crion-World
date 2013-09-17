@@ -28,8 +28,11 @@ bool Texture::Load()
 	glGenTextures(1, &t_Texture);
 	glBindTexture(m_textureTarget, t_Texture);
 	//Initialize texture with image data
-	glTexImage2D(m_textureTarget, 0, GL_RGB, FreeImage->Width(), FreeImage->Height(), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage->Bits());
-	
+	if(FreeImage->BitsOnPixel() == 3) // if image has 3 bits per pixel
+		glTexImage2D(m_textureTarget, 0, GL_RGB, FreeImage->Width(), FreeImage->Height(), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage->Bits());
+	else // if image has 4 bits per pixel
+		glTexImage2D(m_textureTarget, 0, GL_RGBA, FreeImage->Width(), FreeImage->Height(), 0, GL_BGR, GL_UNSIGNED_BYTE, FreeImage->Bits());
+
 	// min and mag filters
 	glTexParameteri( m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri( m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -51,7 +54,6 @@ bool Texture::LoadMipMaps( const std::string & s_Filename)
 	glBindTexture( GL_TEXTURE_2D, t_Texture ); // Bind texture name
 
 	//make mipmaps
-	
 	// min and mag filters
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );

@@ -33,7 +33,7 @@ class Mesh
 	bool initMaterials(const aiScene* pScene, const std::string &Filename);
 	void clear();
 
-#define INVALID_MATERIAL 0xFFFFFFFF
+#define INVALID_MATERIAL -1
 
 	struct MeshEntry
 	{
@@ -60,7 +60,7 @@ public:
 	
 	bool loadMesh(const std::string &filename);
 	bool setTexturePath(std::string &filename);
-	bool setTexturePath(const char* & filename);
+	bool setTexturePath(const char* filename);
 	std::string * getTexturePath();
 
 	void render();
