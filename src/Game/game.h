@@ -5,6 +5,8 @@
 #include "../ShadowMapTechnique/ShadowMapTechnique.h"
 #include "../Object_manager/Object_manager.h"
 #include "../Skybox/Skybox.h"
+#include "../Landscape/LandscapeTechnique.h"
+#include "../Landscape/Landscape.h"
 #include <string>
 
 class Game
@@ -21,6 +23,9 @@ class Game
 	SpotLight * m_pSpotLight;
 	Object_manager * m_pObjects;
 	Skybox * m_pSkybox;
+	std::unique_ptr <Landscape> m_pLandscape;
+	std::unique_ptr <LandscapeTechnique> m_pLandscapeTechnique;
+
 
 
 	struct
@@ -36,6 +41,7 @@ class Game
 	void initDirectionaLights();
 	void initPointLights();
 	void initSpotLights();
+	bool initHeightmap();
 	void renderPointLights();
 	void renderSpotLights();
 	void renderLightEffects();

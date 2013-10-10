@@ -127,6 +127,13 @@ bool Game::initSkybox()
 	return true;
 }
 
+bool Game::initHeightmap()
+{
+	m_pLandscapeTechnique = std::unique_ptr<LandscapeTechnique>();
+	if(!m_pLandscapeTechnique->init())
+		return false;
+}
+
 void Game::createWindow(int windowWidth, int windowHeight)
 {
 	glfwSetErrorCallback(Game::errorCallback);
