@@ -11,3 +11,11 @@ Crion::Vertex::Vertex(float & x, float & y, float & z)
 	this->z = z;
 }
 
+Crion::Vertex::Vertex()
+{
+}
+
+Crion::Vertex::~Vertex()
+{
+}
+

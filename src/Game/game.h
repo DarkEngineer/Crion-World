@@ -42,10 +42,13 @@ class Game
 	void initPointLights();
 	void initSpotLights();
 	bool initHeightmap();
+
 	void renderPointLights();
 	void renderSpotLights();
 	void renderLightEffects();
+	void renderHeightmap();
 	void renderSkybox();
+
 	virtual void shadowMapPass();
 	virtual void renderPass();
 	void addObjects();

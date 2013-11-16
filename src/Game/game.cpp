@@ -45,6 +45,9 @@ bool Game::init()
 	if(!initSkybox())
 		std::cout << "LOG: Skybox initialization error!" << std::endl;
 
+	if(!initHeightmap())
+		std::cout << "LOG: Heightmap initialization error!" << std::endl;
+
 	cam = m_pGameCamera;
 	glfwSetMouseButtonCallback(m_pWindow, Game::mouseButtonWrapper);
 	glfwSetCharCallback(m_pWindow, Game::keyboardCharactersWrapper);
@@ -129,9 +132,12 @@ bool Game::initSkybox()
 
 bool Game::initHeightmap()
 {
-	m_pLandscapeTechnique = std::unique_ptr<LandscapeTechnique>();
+	m_pLandscapeTechnique = std::unique_ptr<LandscapeTechnique>(new LandscapeTechnique);
 	if(!m_pLandscapeTechnique->init())
 		return false;
+	else std::cout << "Heightmap initialized!" << std::endl;
+
+	return true; 
 }
 
 void Game::createWindow(int windowWidth, int windowHeight)
@@ -187,6 +193,7 @@ void Game::renderPass()
 	m_pObjects->render(m_pPipe, * m_pLightingEffect);
 
 	renderSkybox();
+	renderHeightmap();
 }
 
 void Game::render()
@@ -245,6 +252,11 @@ void Game::renderLightEffects()
 void Game::renderSkybox()
 {
 	m_pSkybox->render();
+}
+
+void Game::renderHeightmap()
+{
+	m_pLandscape->render();
 }
 
 Object_manager * Game::getObjects()

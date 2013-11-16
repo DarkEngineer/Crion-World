@@ -10,6 +10,8 @@ namespace Crion
 		float y;
 		float z;
 
+		Vertex::Vertex();
+		Vertex::~Vertex();
 		Vertex::Vertex(float & x, float & y, float & z);
 	};
 };
