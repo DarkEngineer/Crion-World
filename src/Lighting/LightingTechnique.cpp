@@ -249,7 +249,7 @@ void LightingTechnique::setPointLights(unsigned int lightsNumber, const PointLig
 {
 	glUniform1i(m_numPointLightsLocation, lightsNumber);
 
-	for(int i = 0; i < lightsNumber; i++)
+	for(unsigned int i = 0; i < lightsNumber; i++)
 	{
 		glUniform3f(m_pointLightsLocation[i].color, light[i].color.x, light[i].color.y, light[i].color.z);
 		glUniform1f(m_pointLightsLocation[i].ambientIntensity, light[i].ambientIntensity);
@@ -265,7 +265,7 @@ void LightingTechnique::setSpotLights(unsigned int lightsNumber, const SpotLight
 {
 	glUniform1i(m_numSpotLightsLocation, lightsNumber);
 
-	for(int i = 0; i < lightsNumber; i++)
+	for(unsigned int i = 0; i < lightsNumber; i++)
 	{
 		glUniform3f(m_spotLightLocation[i].color, light[i].color.x, light[i].color.y, light[i].color.z);
 		glUniform1f(m_spotLightLocation[i].ambientIntensity, light[i].ambientIntensity);

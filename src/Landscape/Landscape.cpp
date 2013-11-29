@@ -6,19 +6,37 @@ Landscape::Landscape()
 	m_height(1),
 	m_center(glm::vec3(0.0f, 0.0f, 0.0f)),
 	m_numVertices(40),
-	m_stepSize((m_width * m_height) * (1 / pow(2, m_numVertices))),
-	m_name(NULL),
-	m_vertices(NULL),
-	m_textures(NULL),
-	m_VAO(NULL),
-	m_VB(NULL),
-	m_IB(NULL)
+	m_stepSize((m_width * m_height) * (1 / pow(2, m_numVertices)))
 {
 }
 
 Landscape::~Landscape()
 {
 	remove();
+}
+
+bool Landscape::init(unsigned int landWidth, unsigned int landHeight)
+{
+	m_pLandscapeTechnique = std::unique_ptr<LandscapeTechnique>(new LandscapeTechnique);
+	if(!m_pLandscapeTechnique->init())
+		return false;
+	else std::cout << "Heightmap initialized!" << std::endl;
+
+	m_pLandscapeTechnique->enable();
+	m_pLandscapeTechnique->setTextureUnit(0);
+
+	m_pTextures.push_back(std::unique_ptr<Texture>(new Texture(GL_TEXTURE_2D, "images/default/chessboard.jpg")));
+	m_pTextures[0]->Load();
+
+	if(!create(landWidth, landHeight))
+		return false;
+
+	return true; 
+}
+
+void Landscape::setWVP(const glm::mat4 & matrix)
+{
+	m_pLandscapeTechnique->setWVP(matrix);
 }
 
 
@@ -81,6 +99,7 @@ void Landscape::bindData()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IB);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m_indices.size(), & m_indices[0], GL_STATIC_DRAW);
 }
+
 bool Landscape::create(unsigned int landWidth, unsigned int landHeight)
 {
 	m_width = landWidth;
@@ -108,30 +127,34 @@ bool Landscape::create(unsigned int landWidth, unsigned int landHeight)
 	}
 
 	bindData();
+
+	return true;
 }
 
 void Landscape::render()
 {
+	m_pLandscapeTechnique->enable();
+
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VB);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
+	glDisableVertexAttribArray(1);
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IB);
 	glVertexAttribPointer(0, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(unsigned int), 0);
 
+	
 	glDrawElements(GL_TRIANGLE_STRIP, 3, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
 
 }
 
 void Landscape::remove()
 {
-	m_textures.clear();
 	m_vertices.clear();
 	m_indices.clear();
 	glDeleteBuffers(1, & m_VB);

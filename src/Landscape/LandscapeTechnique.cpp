@@ -22,6 +22,9 @@ bool LandscapeTechnique::init()
 	if(!finalize())
 		return false;
 
+	loadMatrixLocation();
+	loadTexturesLocation();
+
 	return true;
 }
 
@@ -51,7 +54,7 @@ void LandscapeTechnique::setWVP(const glm::mat4 & matrix)
 }
 
 
-void LandscapeTechnique::setTextureUnit(unsigned int & texture)
+void LandscapeTechnique::setTextureUnit(unsigned int texture)
 {
 	glUniform1i(m_textureLocation, texture);
 }

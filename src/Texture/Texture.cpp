@@ -4,7 +4,7 @@
 	void checkerror()
 {
 	GLenum string = glGetError();
-	std::cout << "Fatail error: " << gluErrorString(string) << std::endl;
+	std::cout << "Fatal error: " << gluErrorString(string) << std::endl;
 }
 
 Texture::Texture()

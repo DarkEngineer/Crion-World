@@ -1,19 +1,23 @@
 #include "Object_manager.h"
 
-Object_manager::Object_manager()
+template <class lType>
+Object_manager<lType>::Object_manager()
 {
 }
 
-Player & Object_manager::getPlayer()
+template <class lType>
+Player & Object_manager<lType>::getPlayer()
 {
 	return player;
 }
 
+template <class lType>
 std::vector <std::unique_ptr<Object>> & Object_manager::getObjects()
 {
 	return objects;
 }
 
+template <class lType>
 bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructure)
 {
 
@@ -21,11 +25,13 @@ bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructu
 
 }
 
+template <class lType>
 bool Object_manager::addPlayer(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
 	return player.ifCreated(player.create(position, sourceMesh, fileStructure));
 }
 
+template <class lType>
 bool Object_manager::addObject(const char * sourceMesh, const char * fileStructure)
 {
 	objects.push_back(std::unique_ptr<Object>(new Object(sourceMesh, fileStructure)));
@@ -34,6 +40,7 @@ bool Object_manager::addObject(const char * sourceMesh, const char * fileStructu
 	return true;
 }
 
+template <class lType>
 bool Object_manager::addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
 	objects.push_back(std::unique_ptr<Object>(new Object(position, sourceMesh, fileStructure)));
@@ -42,6 +49,7 @@ bool Object_manager::addObject(glm::vec3 & position, const char * sourceMesh, co
 	return true;
 }
 
+template <class lType>
 void Object_manager::render()
 {
 	if(player.getCreateStatus())
@@ -52,6 +60,7 @@ void Object_manager::render()
 		(*count)->render();
 }
 
+template <class lType>
 void Object_manager::render(Pipeline * manager, LightingTechnique & position_reader)
 {
 	if(player.getCreateStatus())
@@ -77,6 +86,7 @@ void Object_manager::render(Pipeline * manager, LightingTechnique & position_rea
 	}
 }
 
+template <class lType>
 Object_manager::~Object_manager()
 {
 }

@@ -20,7 +20,7 @@ public:
 	virtual bool init();
 
 	void setWVP(const glm::mat4 & matrix);
-	void setTextureUnit(unsigned int & texture);
+	void setTextureUnit(unsigned int texture);
 };
 
 #endif

@@ -132,12 +132,11 @@ bool Game::initSkybox()
 
 bool Game::initHeightmap()
 {
-	m_pLandscapeTechnique = std::unique_ptr<LandscapeTechnique>(new LandscapeTechnique);
-	if(!m_pLandscapeTechnique->init())
+	m_pLandscape = std::unique_ptr<Landscape>(new Landscape);
+	if(!m_pLandscape->init(60, 60))
 		return false;
-	else std::cout << "Heightmap initialized!" << std::endl;
 
-	return true; 
+	return true;
 }
 
 void Game::createWindow(int windowWidth, int windowHeight)
@@ -183,17 +182,18 @@ void Game::shadowMapPass()
 
 void Game::renderPass()
 {
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_pLightingEffect->enable();
+
 	renderPointLights();
 	renderSpotLights();
 	renderLightEffects();
+
 	m_pPipe->setCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
 	m_pObjects->render(m_pPipe, * m_pLightingEffect);
 
-	renderSkybox();
 	renderHeightmap();
+	renderSkybox();
 }
 
 void Game::render()
@@ -256,6 +256,7 @@ void Game::renderSkybox()
 
 void Game::renderHeightmap()
 {
+	m_pLandscape->setWVP(* m_pPipe->getTrans());
 	m_pLandscape->render();
 }
 
