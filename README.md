@@ -18,6 +18,6 @@ Project Properties -> Configuration Properties -> C/C++ -> Preprocessor: GLFW_BU
 
 Project Properties -> Configuration Properties -> Linker -> Input: opengl32.lib;glu32.lib;glut32.lib;glfw3dll.lib;glew32.lib;glew32mx.lib;FreeImage.lib;SOIL.lib;assimp.lib;%(AdditionalDependencies)
 
-DLLs: freeglut.dll, FreeImage.dll, glew32.dll, glew32d.dll, GLFW.dll, glut32.dll, 
+DLLs: freeglut.dll, FreeImage.dll, glew32.dll, glew32d.dll, SOIL.dll, glew32mx.dll, GLFW.dll, glut32.dll, 
 
 
