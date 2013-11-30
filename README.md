@@ -6,7 +6,7 @@ Crion-World
 How to make a build
 ===================
 
-You need to have on your computer Visual Studio 2012 Express or better, either Eclipse will be fine. Also you need assimp, FreeImage, GLFW, GLM
+You need to have on your computer Visual Studio 2012 Express or better, either Eclipse will be fine. Also you need assimp, FreeImage, GLFW, GLM. This libraries are included into project to help you better! 
 
 Configurations on Visual Studio 2012 Express
 ==============
