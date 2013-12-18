@@ -1,23 +1,29 @@
 #include "Object_manager.h"
 
-template <class lType>
-Object_manager<lType>::Object_manager()
+Object_manager::objectData::objectData()
+{
+	s_position = glm::vec3(0.0f, 0.0f, 0.0f);
+	s_fileStructure = NULL;
+	s_sourceMesh = NULL;
+}
+
+Object_manager::Object_manager()
 {
 }
 
-template <class lType>
-Player & Object_manager<lType>::getPlayer()
+
+Player & Object_manager::getPlayer()
 {
 	return player;
 }
 
-template <class lType>
+
 std::vector <std::unique_ptr<Object>> & Object_manager::getObjects()
 {
-	return objects;
+	return m_objects;
 }
 
-template <class lType>
+
 bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructure)
 {
 
@@ -25,42 +31,49 @@ bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructu
 
 }
 
-template <class lType>
+
 bool Object_manager::addPlayer(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
 	return player.ifCreated(player.create(position, sourceMesh, fileStructure));
 }
 
-template <class lType>
+
 bool Object_manager::addObject(const char * sourceMesh, const char * fileStructure)
 {
-	objects.push_back(std::unique_ptr<Object>(new Object(sourceMesh, fileStructure)));
+	m_objects.push_back(std::unique_ptr<Object>(new Object(sourceMesh, fileStructure)));
 	std::cout << "LOG: Object " << sourceMesh << " created without coordinates" << std::endl; 
 
 	return true;
 }
 
-template <class lType>
+
 bool Object_manager::addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
-	objects.push_back(std::unique_ptr<Object>(new Object(position, sourceMesh, fileStructure)));
+	m_objects.push_back(std::unique_ptr<Object>(new Object(position, sourceMesh, fileStructure)));
 	std::cout << "LOG: Object " << sourceMesh << " created" << std::endl; 
 
 	return true;
 }
 
-template <class lType>
+template <class T>
+bool Object_manager::addObject(T object, glm::vec3 & position, const char * fileStructure, const char * sourceMesh)
+{
+	
+
+}
+
+
 void Object_manager::render()
 {
 	if(player.getCreateStatus())
 		player.render();
 
 	std::vector <std::unique_ptr<Object>>::iterator count;
-	for(count = objects.begin(); count != objects.end(); count++)
+	for(count = m_objects.begin(); count != m_objects.end(); count++)
 		(*count)->render();
 }
 
-template <class lType>
+
 void Object_manager::render(Pipeline * manager, LightingTechnique & position_reader)
 {
 	if(player.getCreateStatus())
@@ -72,10 +85,10 @@ void Object_manager::render(Pipeline * manager, LightingTechnique & position_rea
 		player.render();
 	}
 
-	if(objects.size() > 0)
+	if(m_objects.size() > 0)
 	{
 		std::vector <std::unique_ptr<Object>>::iterator count;
-		for(count = objects.begin(); count != objects.end(); count++)
+		for(count = m_objects.begin(); count != m_objects.end(); count++)
 		{
 			position_reader.setWorldMatrix(*(*count)->getPipeline().getWorldTrans());
 			manager->worldPos((*count)->getPosition().x, (*count)->getPosition().y, (*count)->getPosition().z);
@@ -86,8 +99,7 @@ void Object_manager::render(Pipeline * manager, LightingTechnique & position_rea
 	}
 }
 
-template <class lType>
+
 Object_manager::~Object_manager()
 {
 }
-
