@@ -11,18 +11,15 @@ Object_manager::Object_manager()
 {
 }
 
-
 Player & Object_manager::getPlayer()
 {
 	return player;
 }
 
-
 std::vector <std::unique_ptr<Object>> & Object_manager::getObjects()
 {
 	return m_objects;
 }
-
 
 bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructure)
 {
@@ -31,12 +28,10 @@ bool Object_manager::addPlayer(const char * sourceMesh, const char * fileStructu
 
 }
 
-
 bool Object_manager::addPlayer(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
 	return player.ifCreated(player.create(position, sourceMesh, fileStructure));
 }
-
 
 bool Object_manager::addObject(const char * sourceMesh, const char * fileStructure)
 {
@@ -46,7 +41,6 @@ bool Object_manager::addObject(const char * sourceMesh, const char * fileStructu
 	return true;
 }
 
-
 bool Object_manager::addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure)
 {
 	m_objects.push_back(std::unique_ptr<Object>(new Object(position, sourceMesh, fileStructure)));
@@ -54,14 +48,6 @@ bool Object_manager::addObject(glm::vec3 & position, const char * sourceMesh, co
 
 	return true;
 }
-
-template <class T>
-bool Object_manager::addObject(T object, glm::vec3 & position, const char * fileStructure, const char * sourceMesh)
-{
-	
-
-}
-
 
 void Object_manager::render()
 {
@@ -72,7 +58,6 @@ void Object_manager::render()
 	for(count = m_objects.begin(); count != m_objects.end(); count++)
 		(*count)->render();
 }
-
 
 void Object_manager::render(Pipeline * manager, LightingTechnique & position_reader)
 {
@@ -98,7 +83,6 @@ void Object_manager::render(Pipeline * manager, LightingTechnique & position_rea
 		}
 	}
 }
-
 
 Object_manager::~Object_manager()
 {

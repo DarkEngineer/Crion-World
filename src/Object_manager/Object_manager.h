@@ -18,13 +18,29 @@ class Object_manager
 		~objectData();
 	};
 
+	// template for creating new objects in Object Manager
+	// structure add new Object to s_m_obj then creating object with number in map s_m_obj_map
+	template <typename T>
+	struct s_Objects
+	{
+		std::vector <objectData> s_m_obj;
+		std::map <unsigned int, T > s_m_obj_map;
+
+		bool addObject(T object, glm::vec3 & position, const char * fileStructure, const char * sourceMesh)
+		{
+			objectData t_data;
+			t_data.s_position = position;
+			t_data.s_fileStructure = fileStructure;
+			t_data.s_sourceMesh = sourceMesh;
+			s_m_obj.push_back(t_data);
+			s_m_obj_map[s_m_obj.size() - 1] = object
+
+		}
+	};
 
 	Player player;
 	std::vector <std::unique_ptr<Object>> m_objects;
 
-	std::vector <objectData> m_obj;
-	template <class T>
-	std::map <unsigned int, T> m_obj_map;
 
 public:
 	Player & getPlayer();
@@ -33,8 +49,12 @@ public:
 	bool addPlayer(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
 	bool addObject(const char * sourceMesh, const char * fileStructure);
 	bool addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
-	template <class T>
-	bool addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL);
+	// method for creating new object, it uses template and builded method in private structure s_Objects
+	template <typename T>
+	bool addObject(T object, glm::vec3 & position, const char * fileStructure, const char * sourceMesh)
+	{
+		typename s_Objects<T>::addObjects(object, position, fileStructure, sourceMesh);
+	}
 	virtual void render();
 	virtual void render(Pipeline * manager, LightingTechnique & position_reader);
 
