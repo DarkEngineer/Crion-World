@@ -32,6 +32,7 @@ class Game
 
 	bool initLight();
 	bool initModels();
+	bool initObjects();
 	bool initSkybox();
 	bool initCallbacks();
 	void initDirectionaLights();

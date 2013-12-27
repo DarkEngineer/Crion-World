@@ -26,7 +26,7 @@ class Object_manager
 		std::vector <objectData> s_m_obj;
 		std::map <unsigned int, T > s_m_obj_map;
 
-		bool addObject(T object, glm::vec3 & position, const char * fileStructure, const char * sourceMesh)
+		bool addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
 		{
 			objectData t_data;
 			t_data.s_position = position;
@@ -51,7 +51,7 @@ public:
 	bool addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
 	// method for creating new object, it uses template and builded method in private structure s_Objects
 	template <typename T>
-	bool addObject(T object, glm::vec3 & position, const char * fileStructure, const char * sourceMesh)
+	bool addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
 	{
 		typename s_Objects<T>::addObjects(object, position, fileStructure, sourceMesh);
 	}

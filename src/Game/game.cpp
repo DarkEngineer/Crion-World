@@ -118,6 +118,13 @@ bool Game::initModels()
 	return value;
 }
 
+bool Game::initObjects()
+{
+	Landscape t_land;
+	t_land.init(20,20);
+	m_pObjects->addObject(t_land, glm::vec3(1.0f, 2.0f, 0.0f));
+}
+
 bool Game::initSkybox()
 {
 	m_pSkybox = new Skybox(m_pGameCamera, * m_pPipe);

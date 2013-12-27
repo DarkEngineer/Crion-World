@@ -39,6 +39,7 @@ class Landscape
 public:
 	Landscape();
 	~Landscape();
+	// method for creating map with (landWidth x landHeight) size
 	bool init(unsigned int landWidth, unsigned int landHeight);
 	void setWVP(const glm::mat4 & matrix);
 	void loadTexture(std::string name);
