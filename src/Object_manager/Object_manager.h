@@ -26,7 +26,7 @@ class Object_manager
 		std::vector <objectData> s_m_obj;
 		std::map <unsigned int, T > s_m_obj_map;
 
-		bool addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
+		void addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
 		{
 			objectData t_data;
 			t_data.s_position = position;
@@ -54,6 +54,7 @@ public:
 	bool addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
 	{
 		typename s_Objects<T>::addObjects(object, position, fileStructure, sourceMesh);
+		return true;
 	}
 	virtual void render();
 	virtual void render(Pipeline * manager, LightingTechnique & position_reader);
