@@ -7,7 +7,7 @@
 //class of heightmap which will be great for creating beautiful landscapes
 class Landscape
 {
-	std::unique_ptr <LandscapeTechnique> m_pLandscapeTechnique;
+	std::shared_ptr <LandscapeTechnique> m_pLandscapeTechnique;
 	unsigned int m_width;
 	unsigned int m_height;
 	glm::vec3 m_center;

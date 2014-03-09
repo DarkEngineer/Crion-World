@@ -17,20 +17,25 @@ Landscape::~Landscape()
 
 bool Landscape::init(unsigned int landWidth, unsigned int landHeight)
 {
+	/*
 	m_pLandscapeTechnique = std::unique_ptr<LandscapeTechnique>(new LandscapeTechnique);
+	
 	if(!m_pLandscapeTechnique->init())
 		return false;
-	else std::cout << "Heightmap initialized!" << std::endl;
+	else 
+	{
+		std::cout << "Heightmap initialized!" << std::endl;
 
-	m_pLandscapeTechnique->enable();
-	m_pLandscapeTechnique->setTextureUnit(0);
+		m_pLandscapeTechnique->enable();
+		m_pLandscapeTechnique->setTextureUnit(0);
 
-	m_pTextures.push_back(std::unique_ptr<Texture>(new Texture(GL_TEXTURE_2D, "images/default/chessboard.jpg")));
-	m_pTextures[0]->Load();
-
-	if(!create(landWidth, landHeight))
-		return false;
-
+		m_pTextures.push_back(std::unique_ptr<Texture>(new Texture(GL_TEXTURE_2D, "images/default/chessboard.jpg")));
+		m_pTextures[0]->Load();
+	
+		if(!create(landWidth, landHeight))
+			return false;
+	}
+	*/
 	return true; 
 }
 

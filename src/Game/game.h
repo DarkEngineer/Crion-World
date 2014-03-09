@@ -5,7 +5,7 @@
 #include "../ShadowMapTechnique/ShadowMapTechnique.h"
 #include "../Object_manager/Object_manager.h"
 #include "../Skybox/Skybox.h"
-//#include "../Landscape/Landscape.h"
+#include "../Landscape/Landscape.h"
 #include <string>
 
 class Game

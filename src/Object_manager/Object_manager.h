@@ -2,7 +2,7 @@
 #define Object_manager_h
 #include "../Player/Player.h"
 #include "../Lighting/LightingTechnique.h"
-#include "../Landscape/Landscape.h"
+//#include "../Landscape/Landscape.h"
 #include <memory>
 #include <map>
 
@@ -26,14 +26,14 @@ class Object_manager
 		std::vector <objectData> s_m_obj;
 		std::map <unsigned int, T > s_m_obj_map;
 
-		void addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
+		void addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL) const
 		{
 			objectData t_data;
 			t_data.s_position = position;
 			t_data.s_fileStructure = fileStructure;
 			t_data.s_sourceMesh = sourceMesh;
 			s_m_obj.push_back(t_data);
-			s_m_obj_map[s_m_obj.size() - 1] = object
+			s_m_obj_map[s_m_obj.size() - 1] = object;
 
 		}
 	};
@@ -50,10 +50,11 @@ public:
 	bool addObject(const char * sourceMesh, const char * fileStructure);
 	bool addObject(glm::vec3 & position, const char * sourceMesh, const char * fileStructure);
 	// method for creating new object, it uses template and builded method in private structure s_Objects
-	template <typename T>
-	bool addObject(T object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
+	template <class S>
+	bool addObject(S object, glm::vec3 & position, const char * fileStructure = NULL, const char * sourceMesh = NULL)
 	{
-		typename s_Objects<T>::addObjects(object, position, fileStructure, sourceMesh);
+
+		typename s_Objects<S>::addObject(object, position, fileStructure, sourceMesh);
 		return true;
 	}
 	virtual void render();

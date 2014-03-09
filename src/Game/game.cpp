@@ -44,10 +44,10 @@ bool Game::init()
 
 	if(!initSkybox())
 		std::cout << "LOG: Skybox initialization error!" << std::endl;
-
+	/*
 	if(!initHeightmap())
 		std::cout << "LOG: Heightmap initialization error!" << std::endl;
-
+		*/
 	cam = m_pGameCamera;
 	glfwSetMouseButtonCallback(m_pWindow, Game::mouseButtonWrapper);
 	glfwSetCharCallback(m_pWindow, Game::keyboardCharactersWrapper);
@@ -199,7 +199,7 @@ void Game::renderPass()
 	m_pPipe->setCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
 	m_pObjects->render(m_pPipe, * m_pLightingEffect);
 
-	renderHeightmap();
+	//renderHeightmap();
 	renderSkybox();
 }
 
